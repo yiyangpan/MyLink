@@ -1,0 +1,2 @@
+# MyLink
+A web application called "MyLink" that will have a functionality similar to the one offered by Facebook. After registering, a user will be able to receive a log with the postings of his/her friends of what she/he is doing. Other people will be able to search the name of a person and send an friend request. The user will receive the request in his/her mylink page and will be able to accept or reject the request.
