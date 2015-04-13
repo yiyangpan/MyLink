@@ -11,8 +11,8 @@ import random
 
 #Get Databasedir
 MYLOGIN="xiao67"
-DATABASE="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/picture_share.db"
-IMAGEPATH="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/images"
+DATABASE="/homes/"+MYLOGIN+"/PeteTwitt/gott_is_a_ladyboy.db"
+IMAGEPATH="/homes/"+MYLOGIN+"/PeteTwitt/images"
 
 
 
@@ -53,7 +53,7 @@ def login_form():
 	<meta name="description" content="">
         <meta name="author" content="">
 
-	<title>MyLink</title>
+	<title>PeteTwitt</title>
 
 	<!-- Bootstrap core CSS -->
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -62,19 +62,19 @@ def login_form():
 	<link href="signin.css" rel="stylesheet">
 	</head>
 
-	<body background="bg.jpg">
+	<body>
 	<div class="container">
 	<form method=post action="login.cgi" class="form-signin" role="form">	
 	<div class="row">
 	<div class="col-md-12">
-	<h2 class="form-signin-heading" style="text-align: center; color:white">MyLink</h2>
+	<h2 class="form-signin-heading" style="text-align: center">CS390: PeteTwitt</h2>
 	</div>
 	</div>
 	<input type="email" name="email" class="form-control" placeholder="Email address" required autofocus>
 	<input type="password" name="password" class="form-control" placeholder="Password" required>
 	<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 	<input type="hidden" name="action" value="login">
-	<a href="login.cgi?action=signup" class="btn btn-link btn-lg btn-block" role="button" style="color:white">Register</a>
+	<a href="login.cgi?action=signup" class="btn btn-link btn-lg btn-block" role="button">Register</a>
 	</form>
 
 	</div> <!-- /container -->
@@ -94,32 +94,26 @@ def signup_form():
 <HTML>
 <HEAD>
 <TITLE>Info Form</TITLE>
-<!-- Bootstrap core CSS -->
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Custom styles for this template -->
-<link href="signup.css" rel="stylesheet">
 </HEAD>
 
-<BODY background="bg.jpg" style="text-align: center">
+<BODY BGCOLOR = white>
 
-<center><H2 style="text-align: center; color:white">Register</H2></center>
+<center><H2>Register</H2></center>
 
-<H3 style="text-align: center; color:white">Type User and Password:</H3>
+<H3>Type User and Password:</H3>
 
-<TABLE align=center >
-<FORM METHOD=post ACTION="login.cgi" style="text-align: center">
-<TR style="text-align: center; color:white"><TH >First name:</TH><TD><INPUT TYPE=text NAME="first_name" ></TD><TR>
-<TR style="text-align: center; color:white"><TH>Last name:</TH><TD><INPUT TYPE=text NAME="last_name"></TD><TR>
-<TR style="text-align: center; color:white"><TH>Email:</TH><TD><INPUT TYPE=text NAME="email"></TD><TR>
-<TR style="text-align: center; color:white"><TH>Password:</TH><TD><INPUT TYPE=password NAME="password"></TD></TR>
+<TABLE BORDER = 0>
+<FORM METHOD=post ACTION="login.cgi">
+<TR><TH>First name:</TH><TD><INPUT TYPE=text NAME="first_name"></TD><TR>
+<TR><TH>Last name:</TH><TD><INPUT TYPE=text NAME="last_name"></TD><TR>
+<TR><TH>Email:</TH><TD><INPUT TYPE=text NAME="email"></TD><TR>
+<TR><TH>Password:</TH><TD><INPUT TYPE=password NAME="password"></TD></TR>
 </TABLE>
 
-<INPUT TYPE=hidden NAME="action" VALUE="add_user" style="text-align: center">	
-<input type=hidden name="user" value={user} style="text-align: center">
-<input type=hidden name="session" value={session} style="text-align: center">
-<br>
-<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Register" >
+<INPUT TYPE=hidden NAME="action" VALUE="add_user">	
+<input type=hidden name="user" value={user}>
+<input type=hidden name="session" value={session}>
+<INPUT TYPE=submit VALUE="Register">
 </FORM>
 
 </BODY>
@@ -128,34 +122,26 @@ def signup_form():
 	print_html_content_type()
 	print(html)
 
-
-###################################################
 def change_password_form(user, session):
 	html="""
 <HTML>
 <HEAD>
 <TITLE>Info Form</TITLE>
-	<!-- Bootstrap core CSS -->
-        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </HEAD>
 
-<BODY background="bg.jpg">
+<BODY BGCOLOR = white>
 
-<center><H2 style="text-align: center; color:white">Change the password</H2></center>
+<center><H2>ARE YOU FUCKING SERIOUS??? CHANGING PASSWORD?????!!!</H2></center>
 
-<TABLE align=center>
+<TABLE BORDER = 0>
 <FORM METHOD=post ACTION="login.cgi">
-<TR><TH style="text-align: center; color:white">New Password:</TH><TD ><INPUT TYPE=password NAME="password"></TD></TR>
+<TR><TH>New Password:</TH><TD><INPUT TYPE=password NAME="password"></TD></TR>
 </TABLE>
 
 <INPUT TYPE=hidden NAME="action" VALUE="change_password">	
 <input type=hidden name="user" value={user}>
 <input type=hidden name="session" value={session}>
-<br>
-<div style="text-align: center">
-	<INPUT style="text-align: center" class="btn btn-lg btn-primary" TYPE=submit VALUE="Submit">
-</div>
+<INPUT TYPE=submit VALUE="Submit">
 </FORM>
 
 </BODY>
@@ -173,13 +159,11 @@ def search_last_name_form(form):
 		<HTML>
 <HEAD>
 <TITLE>Info Form</TITLE>
-<!-- Bootstrap core CSS -->
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 </HEAD>
 
-<BODY background="bg.jpg">
+<BODY BGCOLOR = white>
 
-<center><H2>Find friends on MyLink</H2></center>
+<center><H2>YOU CREEPY STALKER!!!</H2></center>
 
 <TABLE BORDER = 0>
 <FORM METHOD=post ACTION="login.cgi">
@@ -229,21 +213,21 @@ def display_admin_options(user, session):
 		c.execute("SELECT * FROM twitts ORDER BY time DESC")
 		data = c.fetchall()	
 	html="""
-	<head color>
-	<title>MyLink: Feed</title>
+	<head>
+	<title>PeteTwitt: Feed</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="refresh" content="8;url=login.cgi?action=show_feed&user={user}&session={session}">
 	<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
     </head>
 
-	<body background="bg.jpg">
+	<body>
 	<header class="navbar navbar-default navbar-static-top">
   <div class="container">
     <nav class="" role="navigation">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
-        <a class="navbar-brand" href="#"><strong>MyLink</strong></a>
+        <a class="navbar-brand" href="#"><strong>PeteTwitt</strong></a>
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
@@ -268,13 +252,13 @@ def display_admin_options(user, session):
 	  <div class="panel panel-default">
             <div class="panel-body">
               <div class="col-md-12">
-		 <h5 style-"opacity: 70%">New Post</h5>
+		 <h5 style-"opacity: 70%">NEW TWITT</h5>
 		 <form method=post action="login.cgi">
-                    <textarea class="form-control" required name="message" rows="3" placeholder="What's on your mind?"></textarea>
+                    <textarea class="form-control" required name="message" rows="3" placeholder="Your twitt here"></textarea>
 		    <input type=hidden name="action" value="twitt">
 		    <input type=hidden name="user" value={user}>
 		    <input type=hidden name="session" value={session}>
-		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Post</button> 
+		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Twitt</button> 
 		 </form>
               </div>
             </div>
@@ -282,13 +266,13 @@ def display_admin_options(user, session):
 	  <div class="panel panel-default">
             <div class="panel-body">
               <div class="col-md-12">
-		 <h5 style-"opacity: 70%">Add Friends(subscribe)</h5>
+		 <h5 style-"opacity: 70%">SUBSCRIBE</h5>
 		 <form method=post action="login.cgi">
                     <input type=email class="form-control" required name="message" placeholder="Username">
 		    <input type=hidden name="action" value="subscribe">
 		    <input type=hidden name="user" value={user}>
 		    <input type=hidden name="session" value={session}>
-		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Add</button> 
+		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Subscribe</button> 
 		 </form>
               </div>
             </div>
@@ -319,9 +303,9 @@ def display_admin_options(user, session):
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<div class="col-md-12">
-		<h3> Latest Twitts </h3>
+		<h3> Latest Twitts \(.____.)/ </h3>
 		<ul>
-		<li> <a href="login.cgi?action=search_last_name_form&user={user}&session={session}">Search Users</a>
+		<li> <a href="login.cgi?action=search_last_name_form&user={user}&session={session}">Stalk last name</a>
 		</ul>
 	<div id = content>
 		
@@ -345,11 +329,8 @@ def display_admin_options(user, session):
 					user=twit[2]		
 					picturepath='../images/user1/'+user+'.jpg'
 					print '<div style="width:50px;height:50px;overflow:hidden">'
-					print('<image src="'+picturepath+'" style="max-width: 100%"></div>')
-					print '<div>' 
-					print str(twit[1])+ " </div>"	
-					print '<div style="color : #337ab7">' 
-					print "Twitt id:" + str(twit[3]) + "|  Date:" + twit[0] + " | " + "id: " + twit[2] + "</div><br>"
+					print('<image src="'+picturepath+'" style="max-width: 100%"></div>')		
+					print "Twitt id:" + str(twit[3]) + "|  Date:" + twit[0] + " |	" + twit[1]+ "	|	" + "id: " + twit[2] + "<br>"
 					now=twit[3]
 					for twit in data:
 						if (twit[4]==now):
@@ -424,36 +405,16 @@ def upload(form):
 
 	html="""
 		<HTML>
-		<HEAD>
-			<TITLE>Upload Avatar</TITLE>
-			<!-- Bootstrap core CSS -->
-    		<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 
-			<!-- Custom styles for this template -->
-			<link href="upload.css" rel="stylesheet">
-		</HEAD>
-
-		<BODY background="bg.jpg">
 		<FORM ACTION="login.cgi" METHOD="POST" enctype="multipart/form-data">
 			<input type="hidden" name="user" value="{user}">
 			<input type="hidden" name="session" value="{session}">
 			<input type="hidden" name="action" value="upload-pic-data">
-			<div style="text-align: center; color:white">
-				<H2>Choose a picture:</H2>
-				
-			</div>
-			<div style="color : white">
-				<INPUT style="" TYPE="FILE" NAME="file"  class="custom-file-input">
-			</div>
+			<BR><I>Browse Picture:</I> <INPUT TYPE="FILE" NAME="file">
 			<br>
-			<div style="text-align: center" >
-				<input class="btn btn-lg btn-primary" type="submit" value="Submit">
-				<br>
-				<br>
-				<a href="login.cgi?action=return&user={user}&session={session}" style="text-align: center; color:white">Return</a>
-			</div>
+			<input type="submit" value="Press"> to upload the picture!
+			<a href="login.cgi?action=return&user={user}&session={session}">Return</a>
 			</form>
-		</BODY>
 		</HTML>
 	"""
 	print_html_content_type()
@@ -517,7 +478,7 @@ def main():
 				#Test password
 				if form["email"]==None or form["password"]==None:
 					login_form();
-					print("<H3><font color=\"red\">Input something</font></H3>")
+					print("<H3><font color=\"red\">Input something motherfucker</font></H3>")
 				else:				
 					username=form["email"].value
 					password=form["password"].value
