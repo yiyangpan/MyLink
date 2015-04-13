@@ -10,9 +10,30 @@ c.execute("PRAGMA foreign_keys = ON")
 
 # Create users table
 c.execute('''CREATE TABLE users
-	     (email TEXT NOT NULL, 
-	      password TEXT NOT NULL,
-	      PRIMARY KEY(email))''')
+	     (	      
+	      email TEXT NOT NULL, 
+	      first_name TEXT NOT NULL, 
+	      last_name TEXT NOT NULL,
+	      password TEXT NOT NULL)''')
+
+# Create twitts table
+c.execute('''CREATE TABLE twitts
+	     (	      
+	      time DATETIME NOT NULL,
+	      msg TEXT NOT NULL,
+	      owner TEXT NOT NULL,
+	      id INTEGER PRIMARY KEY AUTOINCREMENT,
+	      parent INT NOT NULL,
+	      FOREIGN KEY(owner) REFERENCES users(email)
+	      )''')
+
+# CREATE subscribe table
+c.execute('''CREATE TABLE subscribe
+	     (id INTEGER PRIMARY KEY AUTOINCREMENT,
+	      owner TEXT NOT NULL,
+	      target TEXT NOT NULL,
+	      FOREIGN KEY(owner) REFERENCES users(email)
+	     )''')
 
 # Create album table
 # Visibility is 'public' or 'private'
@@ -42,6 +63,7 @@ c.execute('''CREATE TABLE sessions
 
 # Save the changes
 conn.commit()
+
 
 # Close the connection
 conn.close()
