@@ -12,7 +12,7 @@ import random
 #Get Databasedir
 MYLOGIN="xiao67"
 DATABASE="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/picture_share.db"
-IMAGEPATH="/homes/"+MYLOGIN+"/MyLink/images"
+IMAGEPATH="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/images"
 
 
 
@@ -53,7 +53,7 @@ def login_form():
 	<meta name="description" content="">
         <meta name="author" content="">
 
-	<title>PeteTwitt</title>
+	<title>MyLink</title>
 
 	<!-- Bootstrap core CSS -->
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -67,7 +67,7 @@ def login_form():
 	<form method=post action="login.cgi" class="form-signin" role="form">	
 	<div class="row">
 	<div class="col-md-12">
-	<h2 class="form-signin-heading" style="text-align: center">CS390: PeteTwitt</h2>
+	<h2 class="form-signin-heading" style="text-align: center; color:white">MyLink</h2>
 	</div>
 	</div>
 	<input type="email" name="email" class="form-control" placeholder="Email address" required autofocus>
@@ -101,24 +101,25 @@ def signup_form():
 <link href="signup.css" rel="stylesheet">
 </HEAD>
 
-<BODY background="bg.jpg">
+<BODY background="bg.jpg" style="text-align: center">
 
-<center><H2>Register</H2></center>
+<center><H2 style="text-align: center; color:white">Register</H2></center>
 
-<H3>Type User and Password:</H3>
+<H3 style="text-align: center; color:white">Type User and Password:</H3>
 
-<TABLE >
-<FORM METHOD=post ACTION="login.cgi">
-<TR><TH >First name:</TH><TD><INPUT TYPE=text NAME="first_name" style="text-align: center"></TD><TR>
-<TR><TH>Last name:</TH><TD><INPUT TYPE=text NAME="last_name" style="text-align: center"></TD><TR>
-<TR><TH>Email:</TH><TD><INPUT TYPE=text NAME="email" style="text-align: center"></TD><TR>
-<TR><TH>Password:</TH><TD><INPUT TYPE=password NAME="password" style="text-align: center"></TD></TR>
+<TABLE align=center >
+<FORM METHOD=post ACTION="login.cgi" style="text-align: center">
+<TR style="text-align: center; color:white"><TH >First name:</TH><TD><INPUT TYPE=text NAME="first_name" ></TD><TR>
+<TR style="text-align: center; color:white"><TH>Last name:</TH><TD><INPUT TYPE=text NAME="last_name"></TD><TR>
+<TR style="text-align: center; color:white"><TH>Email:</TH><TD><INPUT TYPE=text NAME="email"></TD><TR>
+<TR style="text-align: center; color:white"><TH>Password:</TH><TD><INPUT TYPE=password NAME="password"></TD></TR>
 </TABLE>
 
 <INPUT TYPE=hidden NAME="action" VALUE="add_user" style="text-align: center">	
 <input type=hidden name="user" value={user} style="text-align: center">
 <input type=hidden name="session" value={session} style="text-align: center">
-<INPUT TYPE=submit VALUE="Register" style="text-align: center">
+<br>
+<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Register" >
 </FORM>
 
 </BODY>
@@ -132,11 +133,14 @@ def change_password_form(user, session):
 <HTML>
 <HEAD>
 <TITLE>Info Form</TITLE>
+	<!-- Bootstrap core CSS -->
+        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </HEAD>
 
 <BODY BGCOLOR = white>
 
-<center><H2>ARE YOU FUCKING SERIOUS??? CHANGING PASSWORD?????!!!</H2></center>
+<center><H2>Change the password</H2></center>
 
 <TABLE BORDER = 0>
 <FORM METHOD=post ACTION="login.cgi">
@@ -483,7 +487,7 @@ def main():
 				#Test password
 				if form["email"]==None or form["password"]==None:
 					login_form();
-					print("<H3><font color=\"red\">Input something motherfucker</font></H3>")
+					print("<H3><font color=\"red\">Input something</font></H3>")
 				else:				
 					username=form["email"].value
 					password=form["password"].value
