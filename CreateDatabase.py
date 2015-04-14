@@ -60,6 +60,20 @@ c.execute('''CREATE TABLE sessions
 	      FOREIGN KEY(user) REFERENCES users(email),
 	      PRIMARY KEY(session))''')
 
+# Create friendCircles table
+c.execute('''CREATE TABLE friendCircles
+	     (friendCircleID INTEGER PRIMARY KEY AUTOINCREMENT,
+	      owner TEXT NOT NULL,
+		  friendCircleName TEXT NOT NULL,
+		  FOREIGN KEY(owner) REFERENCES users(email),
+		  FOREIGN KEY (friendCircleID) REFERENCES circleMembers(friendCircleID))''')
+
+# Create circleMembers table
+c.execute('''CREATE TABLE circleMembers
+	     (friendCircleID INT NOT NULL,
+	      username TEXT NOT NULL,
+		  FOREIGN KEY (friendCircleID) REFERENCES friendCircles(friendCircleID))''')
+
 
 # Save the changes
 conn.commit()

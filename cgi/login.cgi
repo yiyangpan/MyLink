@@ -202,66 +202,14 @@ def search_last_name_form(form):
 
 ###################################################################
 
-def choose_friend_circle_form(form):
-	user=form["user"].value
-	s=form["session"].value
+def choose_friend_circle_form(user, session):
 	html="""
 		<HTML>
 <HEAD>
 <TITLE>Info Form</TITLE>
 <!-- Bootstrap core CSS -->
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-<script type="text/javaScript">
-	function addNewListItem(){
-		var htmlSelect=document.getElementById('selectYear');
-		var optionValue=document.getElementById('txtYearValue');
-
-		if(optionValue.value==''){
-			alert('please enter option value');
-			optionValue.focus();
-			return false;
-		}
-		if(isOptionAlreadyExist(htmlSelect,optionValue.value)){
-			alert('Option value already exists');
-			optionValue.focus();
-			return false;
-		}
-		if(isOptionAlreadyExist(htmlSelect,optionValue.value)){
-			alert('value already exists');
-			optionValue.focus();
-			return false;
-		}
-		var selectBoxOption = document.createElement("option");
-		selectBoxOption.value = optionValue.value;
-		selectBoxOption.text = optionValue.value;
-		htmlSelect.add(selectBoxOption, null); 
-		alert("Option has been added successfully");
-		return true;
-
-	}
-	function isOptionAlreadyExist(listBox,value){
-		var exists=false;
-		for(var x=0;x<listBox.options.length;x++){
-			if(listBox.options[x].value==value || listBox.options[x].text==value){ 
-			exists=true;
-			break;
-			}
-		}
-		return exists;
-	}
-	function removeListItem(){
-		var htmlSelect=document.getElementById('selectYear');
-
-		if(htmlSelect.options.length==0){
-			alert('You have removed all options');
-			return false;
-		}
-		var optionToRemove=htmlSelect.options.selectedIndex;
-		htmlSelect.remove(optionToRemove);
-		alert('The selected option has been removed successfully');
-		return true;
-	}
-</script>
+<script src="myscripts.js"></script>
 </HEAD>
 
 <BODY background="bg.jpg">
@@ -270,12 +218,12 @@ def choose_friend_circle_form(form):
 
 <TABLE align=center>
 <FORM METHOD=post ACTION="login.cgi">
-<TR><TH style="text-align: center; color:white">TO create a new circle</TH><TD><INPUT TYPE="text" NAME="message"></TD></TR>
+<TR><TH style="text-align: center; color:white">TO create a new circle</TH><TD><INPUT TYPE="text" NAME="new_friend_circle"></TD></TR>
 </TABLE>
 	<div style="text-align: center">
-		<INPUT TYPE=hidden NAME="action" VALUE="search_last_name">	
-		<input type=hidden name="user" value={user}>
-		<input type=hidden name="session" value={session}>
+		<INPUT TYPE=hidden NAME="action" VALUE="add_friend_circle">	
+		<INPUT type=hidden name="user" value={user}>
+		<INPUT type=hidden name="session" value={session}>
 		<INPUT TYPE=submit VALUE="Create">
 	</div>
 	<br><br>
@@ -284,12 +232,12 @@ def choose_friend_circle_form(form):
 
 <table align="center">
 <tr>
-<td style="color:white">Choose an existing friend circle to manage members</td>
-<td align="left"><select name="selectYear" id="selectYear">
-<option value="Purdue">Purdue</option>
-<option value="West Lafayette">West Lafayette</option>
-<option value="Bowling Class">Bowling Class</option>
-</select></td>
+	<td style="color:white">Choose an existing friend circle to manage members</td>
+	<td align="left"><select name="selectYear" id="selectYear">
+	<option value="Purdue">Purdue</option>
+	<option value="West Lafayette">West Lafayette</option>
+	<option value="Bowling Class">Bowling Class</option>
+	</select></td>
 </tr>
 <br>
 </table>
@@ -302,7 +250,7 @@ def choose_friend_circle_form(form):
 </HTML>
 		"""
 	print_html_content_type()
-	print(html)
+	print(html.format(user=user,session=session))
 
 
 ###################################################################
@@ -312,62 +260,13 @@ def manage_friend_circle_form(form):
 	s=form["session"].value
 	html="""
 		<HTML>
+		<HTML>
 <head>
 <!-- Bootstrap core CSS -->
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 <meta http-equiv="Content-Type" content="text/HTML; charset=iso-8859-1" />
 <title>Add Option Items </title>
-<script type="text/javaScript">
-	function addNewListItem(){
-		var htmlSelect=document.getElementById('selectYear');
-		var optionValue=document.getElementById('txtYearValue');
-
-		if(optionValue.value==''){
-			alert('please enter option value');
-			optionValue.focus();
-			return false;
-		}
-		if(isOptionAlreadyExist(htmlSelect,optionValue.value)){
-			alert('Option value already exists');
-			optionValue.focus();
-			return false;
-		}
-		if(isOptionAlreadyExist(htmlSelect,optionValue.value)){
-			alert('value already exists');
-			optionValue.focus();
-			return false;
-		}
-		var selectBoxOption = document.createElement("option");
-		selectBoxOption.value = optionValue.value;
-		selectBoxOption.text = optionValue.value;
-		htmlSelect.add(selectBoxOption, null); 
-		alert("Option has been added successfully");
-		return true;
-
-	}
-	function isOptionAlreadyExist(listBox,value){
-		var exists=false;
-		for(var x=0;x<listBox.options.length;x++){
-			if(listBox.options[x].value==value || listBox.options[x].text==value){ 
-			exists=true;
-			break;
-			}
-		}
-		return exists;
-	}
-	function removeListItem(){
-		var htmlSelect=document.getElementById('selectYear');
-
-		if(htmlSelect.options.length==0){
-			alert('You have removed all options');
-			return false;
-		}
-		var optionToRemove=htmlSelect.options.selectedIndex;
-		htmlSelect.remove(optionToRemove);
-		alert('The selected option has been removed successfully');
-		return true;
-	}
-</script>
+<script src="myscripts.js"></script>
 </head>
 
 <body background="bg.jpg">
@@ -389,17 +288,17 @@ def manage_friend_circle_form(form):
 
 <br><br>
 <table align="center">
-<tr>
-<td style="color:white" align="center">Friend's name</td>
-<td style="text-align: center"><input name="txtYearValue" type="text" id="txtYearValue" /></td>
-</tr>
-<tr>
-</tr>
-<tr>
-<td align="left">&nbsp;</td>
-<td align="center"><input name="btnAddItem" type="button" id="btnAddItem" value="Add Friend" onclick="javaScript:addNewListItem();" /></td>
+	<tr>
+	<td style="color:white" align="center">Friend's name</td>
+	<td style="text-align: center"><input name="txtYearValue" type="text" id="txtYearValue" /></td>
+	</tr>
+	<tr>
+	</tr>
+	<tr>
+	<td align="left">&nbsp;</td>
+	<td align="center"><input name="btnAddItem" type="button" id="btnAddItem" value="Add Friend" onclick="javaScript:addNewListItem();" /></td>
 
-</tr>
+	</tr>
 </table>
 
 <br>
@@ -837,10 +736,29 @@ def main():
 
 		elif action == "search_last_name_form":
 			search_last_name_form(form)
+
+
+################################################################
 		elif action == "choose_friend_circle_form":
-			choose_friend_circle_form(form)
+			choose_friend_circle_form(form["user"].value, form["session"].value)
+		elif action == "add_friend_circle":
+			if "new_friend_circle" in form:
+				owner = form["user"].value
+				friendCircleName = form["new_friend_circle"].value			
+		
+				conn = sqlite3.connect(DATABASE)
+				with conn:
+					c = conn.cursor()
+					params = (owner, friendCircleName)
+					c.execute("INSERT INTO friendCircles (owner, friendCircleName) VALUES (?,?);",params)
+				choose_friend_circle_form(form["user"].value, form["session"].value)
+
+################################################################
 		elif action == "manage_friend_circle_form":
 			manage_friend_circle_form(form)
+
+
+################################################################
 		elif action == "search_last_name":
 			conn = sqlite3.connect(DATABASE)
 			msg = form["message"].value

@@ -10,6 +10,23 @@ for row in c.execute('SELECT * FROM users'):
   print row
 
 print
+print 'Print all friendCircles'
+t = ('ypan91@gmail.com',)
+for row in c.execute('SELECT * FROM friendCircles where owner = ?', t):
+  print row
+
+print
+print 'Print all subscribe'
+t = ('ypan91@gmail.com',)
+for row in c.execute('SELECT * FROM subscribe where owner = ?', t):
+  print row
+
+print
+print 'Print all twitts'
+for row in c.execute('SELECT * FROM twitts'):
+  print row
+
+print
 print "Print peter's password"
 t = ('peter@gmail.com',)
 c.execute('SELECT * FROM users WHERE email=?', t)
