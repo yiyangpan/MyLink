@@ -109,10 +109,10 @@ def signup_form():
 
 <TABLE align=center >
 <FORM METHOD=post ACTION="login.cgi" style="text-align: center">
-<TR style="text-align: center; color:white"><TH >First name:</TH><TD><INPUT TYPE=text NAME="first_name" ></TD><TR>
-<TR style="text-align: center; color:white"><TH>Last name:</TH><TD><INPUT TYPE=text NAME="last_name"></TD><TR>
-<TR style="text-align: center; color:white"><TH>Email:</TH><TD><INPUT TYPE=text NAME="email"></TD><TR>
-<TR style="text-align: center; color:white"><TH>Password:</TH><TD><INPUT TYPE=password NAME="password"></TD></TR>
+<TR ><TH style="text-align: center; color:white">First name:</TH><TD><INPUT TYPE=text NAME="first_name" ></TD><TR>
+<TR ><TH style="text-align: center; color:white">Last name:</TH><TD><INPUT TYPE=text NAME="last_name"></TD><TR>
+<TR ><TH style="text-align: center; color:white">Email:</TH><TD><INPUT TYPE=text NAME="email"></TD><TR>
+<TR ><TH style="text-align: center; color:white">Password:</TH><TD><INPUT TYPE=password NAME="password"></TD></TR>
 </TABLE>
 
 <INPUT TYPE=hidden NAME="action" VALUE="add_user" style="text-align: center">	
@@ -183,7 +183,7 @@ def search_last_name_form(form):
 
 <TABLE BORDER = 0>
 <FORM METHOD=post ACTION="login.cgi">
-<TR><TH>Last name:</TH><TD><INPUT TYPE="text" NAME="message"></TD></TR>
+<TR><TH style="text-align: center; color:white">Last name:</TH><TD><INPUT TYPE="text" NAME="message"></TD></TR>
 </TABLE>
 
 <INPUT TYPE=hidden NAME="action" VALUE="search_last_name">	
@@ -211,6 +211,57 @@ def choose_friend_circle_form(form):
 <TITLE>Info Form</TITLE>
 <!-- Bootstrap core CSS -->
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javaScript">
+	function addNewListItem(){
+		var htmlSelect=document.getElementById('selectYear');
+		var optionValue=document.getElementById('txtYearValue');
+
+		if(optionValue.value==''){
+			alert('please enter option value');
+			optionValue.focus();
+			return false;
+		}
+		if(isOptionAlreadyExist(htmlSelect,optionValue.value)){
+			alert('Option value already exists');
+			optionValue.focus();
+			return false;
+		}
+		if(isOptionAlreadyExist(htmlSelect,optionValue.value)){
+			alert('value already exists');
+			optionValue.focus();
+			return false;
+		}
+		var selectBoxOption = document.createElement("option");
+		selectBoxOption.value = optionValue.value;
+		selectBoxOption.text = optionValue.value;
+		htmlSelect.add(selectBoxOption, null); 
+		alert("Option has been added successfully");
+		return true;
+
+	}
+	function isOptionAlreadyExist(listBox,value){
+		var exists=false;
+		for(var x=0;x<listBox.options.length;x++){
+			if(listBox.options[x].value==value || listBox.options[x].text==value){ 
+			exists=true;
+			break;
+			}
+		}
+		return exists;
+	}
+	function removeListItem(){
+		var htmlSelect=document.getElementById('selectYear');
+
+		if(htmlSelect.options.length==0){
+			alert('You have removed all options');
+			return false;
+		}
+		var optionToRemove=htmlSelect.options.selectedIndex;
+		htmlSelect.remove(optionToRemove);
+		alert('The selected option has been removed successfully');
+		return true;
+	}
+</script>
 </HEAD>
 
 <BODY background="bg.jpg">
@@ -219,7 +270,7 @@ def choose_friend_circle_form(form):
 
 <TABLE align=center>
 <FORM METHOD=post ACTION="login.cgi">
-<TR><TH>Create a new circle</TH><TD><INPUT TYPE="text" NAME="message"></TD></TR>
+<TR><TH style="text-align: center; color:white">TO create a new circle</TH><TD><INPUT TYPE="text" NAME="message"></TD></TR>
 </TABLE>
 	<div style="text-align: center">
 		<INPUT TYPE=hidden NAME="action" VALUE="search_last_name">	
@@ -228,12 +279,25 @@ def choose_friend_circle_form(form):
 		<INPUT TYPE=submit VALUE="Create">
 	</div>
 	<br><br>
-	<div style="text-align: center">
-		<a style="text-align: center; color:white"  class="btn btn-lg btn-primary" href="login.cgi?action=manage_friend_circle_form&user={user}&session={session}">Manage Friend Circle</a>
-	</div>
-</FORM>
-<br>
 
+</FORM>
+
+<table align="center">
+<tr>
+<td style="color:white">Choose an existing friend circle to manage members</td>
+<td align="left"><select name="selectYear" id="selectYear">
+<option value="Purdue">Purdue</option>
+<option value="West Lafayette">West Lafayette</option>
+<option value="Bowling Class">Bowling Class</option>
+</select></td>
+</tr>
+<br>
+</table>
+<br>
+	<div style="text-align: center">
+		<a style="text-align: center; color:white"  class="btn btn-lg btn-primary" href="login.cgi?action=manage_friend_circle_form&user={user}&session={session}">Next</a>
+	</div>
+<br>
 </BODY>
 </HTML>
 		"""
@@ -310,7 +374,7 @@ def manage_friend_circle_form(form):
 <center><H2 style="text-align: center; color:white">Manage friends in the circle</H2></center>
 <table align="center">
 <tr>
-<td style="color:white">Existing friends in the circle</td>
+<td style="text-align: center; color:white">Existing friends in the circle</td>
 <td align="left"><select name="selectYear" id="selectYear">
 <option value="John">John</option>
 <option value="Ken">Ken</option>
@@ -319,21 +383,21 @@ def manage_friend_circle_form(form):
 <option value="Peter">Peter</option>
 </select></td>
 </tr>
-<td align="left"><input name="btnRemoveItem" type="button" id="btnRemoveItem" value="Remove Friend" onClick="javaScript:removeListItem();" /></td>
+<td align="center"><input name="btnRemoveItem" type="button" id="btnRemoveItem" value="Remove Friend" onClick="javaScript:removeListItem();" /></td>
 </table>
 
 
 <br><br>
 <table align="center">
 <tr>
-<td style="color:white" align="right">Friend's name</td>
-<td align="left"><input name="txtYearValue" type="text" id="txtYearValue" /></td>
+<td style="color:white" align="center">Friend's name</td>
+<td style="text-align: center"><input name="txtYearValue" type="text" id="txtYearValue" /></td>
 </tr>
 <tr>
 </tr>
 <tr>
 <td align="left">&nbsp;</td>
-<td align="left"><input name="btnAddItem" type="button" id="btnAddItem" value="Add Friend" onclick="javaScript:addNewListItem();" /></td>
+<td align="center"><input name="btnAddItem" type="button" id="btnAddItem" value="Add Friend" onclick="javaScript:addNewListItem();" /></td>
 
 </tr>
 </table>
@@ -499,7 +563,7 @@ def display_admin_options(user, session):
 					print '<div>' 
 					print str(twit[1])+ " </div>"	
 					print '<div style="color : #337ab7">' 
-					print "Twitt id:" + str(twit[3]) + "|  Date:" + twit[0] + " | " + "id: " + twit[2] + "</div><br>"
+					print "Twitt id:" + str(twit[3]) + "|  Date:" + twit[0] + " |	" + "id: " + twit[2] + "</div><br>"
 					now=twit[3]
 					for twit in data:
 						if (twit[4]==now):
@@ -507,7 +571,9 @@ def display_admin_options(user, session):
 							print '<div style="width:50px; height:50px; padding-right:50px; overflow:hidden ">'
 							print('<image src="'+picturepath+'" style="max-width: 100%; position:relative; left:50px;">')	
 							print ('</div>')
-							print "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Reply: Twitt id:  " + str(twit[3]) + "| Date:" + twit[0] + " |	" + twit[1]+ "	|	" + "id: " + twit[2] + "<br>"
+							print "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  " + str(twit[1])+ " </div>"	
+							print '<div style="color : #337ab7">' 
+							print "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Reply: Twitt id:  " + str(twit[3]) + "| Date:" + twit[0] + " |	" + "id: " + twit[2] + "<br>"
 
 	scriptee = """</div></div>	</div>
    </div>
@@ -520,8 +586,8 @@ def display_admin_options(user, session):
 	//    $('#content').load('login.cgi?action=show_feed&user={user}&session={session}');
 	}
 
-	// Execute every 5 seconds
-	window.setInterval(refreshData, 5000);*/
+	// Execute every 60 seconds
+	window.setInterval(refreshData, 60000);*/
 	</script>
 	</html>
 	"""
@@ -589,7 +655,7 @@ def upload(form):
 			<input type="hidden" name="session" value="{session}">
 			<input type="hidden" name="action" value="upload-pic-data">
 			<div style="text-align: center; color:white">
-				<H2>Choose a picture:</H2>
+				<H2>Choose a picture</H2>
 				
 			</div>
 			<div style="color : white">
