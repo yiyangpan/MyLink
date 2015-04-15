@@ -473,14 +473,14 @@ def choose_friend_circle_form(user, session):
 	<p id="output"></p>
 	<script>
 			var selector = document.getElementById('selectCircle');
-    		var value = selector[selector.selectedIndex].value;
-			<!--document.getElementById("output").innerHTML = value;-->
+    		var selectedOption = selector[selector.selectedIndex].value;
+			<!--document.getElementById("output").innerHTML = selectedOption;-->
 
 			<!-- create a hidden input to store the selected Friend Circle -->
 			var input = document.createElement("input");
 			input.setAttribute("type", "hidden");
 			input.setAttribute("name", "selectedCircle");
-			input.setAttribute("value", value);
+			input.setAttribute("value", selectedOption);
 			//append to form element friendCircleForm
 			document.getElementById("friendCircleForm").appendChild(input);
 	</script>
@@ -509,7 +509,7 @@ def manage_friend_circle_form(user, session, circleID):
 			<center><H2 style="text-align: center; color:white">Manage friends in the circle</H2></center>
 			<table align="center">
 			<tr>
-			<td style="text-align: center; color:white">Existing friends in the circle</td>
+			<td style="text-align: center; color:white">Select friend to remove</td>
 			<td align="left">
 		"""
 	print_html_content_type()
@@ -528,24 +528,46 @@ def manage_friend_circle_form(user, session, circleID):
 	restHTML = """
 			</td>
 			</tr>
-			<td align="center"><input name="btnRemoveItem" type="button" id="btnRemoveItem" value="Remove Friend" onClick="javaScript:removeListItem();" /></td>
+
+			<td align="center">                        
+				<!--<input name="btnRemoveItem" type="button" id="btnRemoveItem" value="Remove Friend" onClick="javaScript:removeListItem();" /></td>-->
+				<div style="text-align: center" id="removeCircleMemberForm">
+					<INPUT TYPE=hidden NAME="action" VALUE="remove_member_from_the_circle">	
+					<INPUT type=hidden name="user" value={user}>
+					<INPUT type=hidden name="session" value={session}>
+					<INPUT TYPE=submit VALUE="Remove Friend">
+				</div>
+				<script>
+						var selector = document.getElementById('selectFriends');
+						var selectedOption = selector[selector.selectedIndex].value;
+						<!--document.getElementById("output").innerHTML = selectedOption;-->
+
+						<!-- create a hidden input to store the selected Friend Circle -->
+						var input = document.createElement("input");
+						input.setAttribute("type", "hidden");
+						input.setAttribute("name", "selectedMember");
+						input.setAttribute("value", selectedOption);
+						//append to form element circleMemberForm
+						document.getElementById("removeCircleMemberForm").appendChild(input);
+				</script>
+			</td>
 			</table>
 
 
 			<br><br>
-			<table align="center">
-				<tr>
-				<td style="color:white" align="center">Friend's name</td>
-				<td style="text-align: center"><input name="friendName" type="text" id="friendName" /></td>
-				</tr>
-				<tr>
-				</tr>
-				<tr>
-				<td align="left">&nbsp;</td>
-				<td align="center"><input name="add_member_to_the_circle" type="button" id="add_member_to_the_circle" value="Add Friend" onclick="javaScript:addNewListItem();" /></td>
+			<TABLE align=center>
+			<FORM METHOD=post ACTION="login.cgi">
+			<TR><TH style="text-align: center; color:white">Type friend email to add</TH><TD><INPUT TYPE="text" NAME="friend_name"></TD></TR>
+			</TABLE>
+				<div style="text-align: center" id="addCircleMemberForm">
+					<INPUT TYPE=hidden NAME="action" VALUE="add_member_to_the_circle">	
+					<INPUT type=hidden name="user" value={user}>
+					<INPUT type=hidden name="session" value={session}>
+					<INPUT TYPE=submit VALUE="Add Friend">
+				</div>
+				<br><br>
 
-				</tr>
-			</table>
+			</FORM>
 
 			<br>
 			<div style="text-align: center">
@@ -796,6 +818,7 @@ def main():
 		
 				conn = sqlite3.connect(DATABASE)
 				with conn:
+					conn.text_factory = str
 					c = conn.cursor()
 					params = (owner, friendCircleName)
 					c.execute("INSERT INTO friendCircles (owner, friendCircleName) VALUES (?,?);",params)
@@ -805,15 +828,28 @@ def main():
 		elif action == "manage_friend_circle_form":
 			manage_friend_circle_form(form["user"].value, form["session"].value, 1) #    , form["selectedCircle"].value)
 		elif action == "add_member_to_the_circle":
-			if "new_friend_circle" in form:
-				username = form["friendName"].value
+			if "friend_name" in form:
+				username = form["friend_name"].value
 				friendCircleID = 1			
 				conn = sqlite3.connect(DATABASE)
 				with conn:
+					conn.text_factory = str
 					c = conn.cursor()
 					params = (friendCircleID, username)
 					c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",params)
 				choose_friend_circle_form(form["user"].value, form["session"].value)
+		elif action == "remove_member_from_the_circle":
+			if "selectedMember" in form:
+				username = form["selectedMember"].value
+				friendCircleID = 1			
+				conn = sqlite3.connect(DATABASE)
+				with conn:
+					conn.text_factory = str
+					c = conn.cursor()
+					params = (friendCircleID, u'Ken')
+					c.execute("DELETE FROM circleMembers WHERE friendCircleID = ? AND username = ?;",params)
+				choose_friend_circle_form(form["user"].value, form["session"].value)
+
 
 ################################################################
 		elif action == "search_last_name":
