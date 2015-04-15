@@ -11,15 +11,14 @@ for row in c.execute('SELECT * FROM users'):
 
 print
 print 'Print all friendCircles'
-t = ('ypan91@gmail.com',)
-for row in c.execute('SELECT * FROM friendCircles where owner = ?', t):
+for row in c.execute('SELECT * FROM friendCircles'):
   print row
 
 print
-print 'Print all subscribe'
-t = ('ypan91@gmail.com',)
-for row in c.execute('SELECT * FROM subscribe where owner = ?', t):
+print 'Print all circleMembers'
+for row in c.execute('SELECT * FROM circleMembers'):
   print row
+
 
 print
 print 'Print all twitts'

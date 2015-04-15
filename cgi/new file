@@ -1,9 +1,0 @@
-<table align="center">
-<tr>
-<td style="color:white">Existing friends in the circle</td>
-<td align="left"><select name="selectYear" id="selectYear">
-<option value="Purdue">Purdue</option>
-<option value="West Lafayette">West Lafayette</option>
-<option value="Bowling Class">Bowling Class</option>
-</select></td>
-</tr>
