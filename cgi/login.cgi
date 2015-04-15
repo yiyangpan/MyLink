@@ -207,7 +207,7 @@ def display_admin_options(user, session):
 	<div class="panel panel-default">
             <div class="panel-body">
               <div class="col-md-12">
-		 <h5 style-"opacity: 70%">Unfriend</h5>
+		 <h5 style-"opacity: 70%">Remove Friends</h5>
 		 <form method=post action="login.cgi">
                     <input type=email class="form-control" required name="message" placeholder="Username">
 		    <input type=hidden name="action" value="unfriend">
@@ -218,26 +218,41 @@ def display_admin_options(user, session):
               </div>
             </div>
 	 </div>
-	 
-	<FORM METHOD=post ACTION="login.cgi">
-   	<H4> reply to twitt id: </H4>
-	<INPUT TYPE=text name="id">
-	<H4> content: </H4>
-	<INPUT TYPE=text name="message">
-	<INPUT TYPE=hidden NAME="action" VALUE="reply">
-	<input type=hidden name="user" value={user}>
-	<input type=hidden name="session" value={session}>
-	<INPUT TYPE=submit VALUE="Reply">
-	</FORM>
 
-	<FORM METHOD=post ACTION="login.cgi">
-   	<H4> retweet to twitt id: </H4>
-	<INPUT TYPE=text name="message">
-	<INPUT TYPE=hidden NAME="action" VALUE="retwitt">
-	<input type=hidden name="user" value={user}>
-	<input type=hidden name="session" value={session}>
-	<INPUT TYPE=submit VALUE="retweet">
-	</FORM>
+
+	<!--   old code for PeteTwitt
+
+			<FORM METHOD=post ACTION="login.cgi">
+		   	<H4> reply to twitt id: </H4>
+			<INPUT TYPE=text name="id">
+			<H4> content: </H4>
+			<INPUT TYPE=text name="message">
+			<INPUT TYPE=hidden NAME="action" VALUE="reply">
+			<input type=hidden name="user" value={user}>
+			<input type=hidden name="session" value={session}>
+			<INPUT TYPE=submit VALUE="Reply">
+			</FORM>
+
+			<FORM METHOD=post ACTION="login.cgi">
+		   	<H4> retweet to twitt id: </H4>
+			<INPUT TYPE=text name="message">
+			<INPUT TYPE=hidden NAME="action" VALUE="retwitt">
+			<input type=hidden name="user" value={user}>
+			<input type=hidden name="session" value={session}>
+			<INPUT TYPE=submit VALUE="retweet">
+			</FORM>
+	-->
+
+		<FORM METHOD=post ACTION="login.cgi">
+	   	<H4> post to following group(not finished, twitts need a new attribute for group display): </H4>
+		<INPUT TYPE=text name="id">
+		<H4> content: </H4>
+		<INPUT TYPE=text name="message">
+		<INPUT TYPE=hidden NAME="action" VALUE="reply">
+		<input type=hidden name="user" value={user}>
+		<input type=hidden name="session" value={session}>
+		<INPUT TYPE=submit VALUE="Reply">
+		</FORM>
 
 	</div>
 	<div class = "col-md-8">
@@ -468,8 +483,7 @@ def choose_friend_circle_form(user, session):
 		<HTML>
 <HEAD>
 <TITLE>Info Form</TITLE>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="refresh" content="8;url=login.cgi?action=choose_friend_circle_form&user={user}&session={session}">
+
 <!-- Bootstrap core CSS -->
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="myscripts.js"></script>
@@ -555,9 +569,7 @@ def add_friend_circle_form(user, session, circleID):
 			<head>
 			<!-- Bootstrap core CSS -->
 				<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-			<meta http-equiv="Content-Type" content="text/HTML; charset=iso-8859-1" />
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<meta http-equiv="refresh" content="8;url=login.cgi?action=add_friend_circle_form&user={user}&session={session}">
+
 			<title>Add Option Items </title>
 			<script src="myscripts.js"></script>
 			</head>
@@ -920,7 +932,7 @@ def main():
 					display_admin_options(form["user"].value, form["session"].value)
 				else:
 					display_admin_options(form["user"].value, form["session"].value)
-					print("<H3><font color=\"red\">HAHAHA FUCK YOU HACKER</font></H3>")
+					print("<H3><font color=\"red\">you are not suppose to see this</font></H3>")
 
 		elif action == "retwitt":
 			if "message" in form:		
