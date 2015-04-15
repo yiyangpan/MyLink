@@ -163,7 +163,7 @@ def display_admin_options(user, session):
                   <li><a href="login.cgi?action=change_password_form&user={user}&session={session}">Change Password</a></li>
                   <li><a href="login.cgi?action=upload&user={user}&session={session}">Upload Avatar</a></li>
 		 		  <li><a href="login.cgi?action=show_feed&user={user}&session={session}">Refresh</a></li>
-				  <li><a  style="color:red" href="login.cgi?action=delete_account&user={user}&session={session}">Delete Account</a></li>
+				  <li><a  style="color:red" href="login.cgi?action=delete_account_form&user={user}&session={session}">Delete Account</a></li>
                   <li class="divider"></li>
                   <li><a href="login.cgi?action=return_login&user={user}&session={session}">Log out</a></li>
                 </ul>
@@ -318,6 +318,42 @@ def change_password_form(user, session):
 <br>
 <div style="text-align: center">
 	<INPUT style="text-align: center" class="btn btn-lg btn-primary" TYPE=submit VALUE="Submit">
+</div>
+</FORM>
+
+</BODY>
+</HTML>
+"""
+	print_html_content_type()
+	print(html.format(user=user,session=session))
+
+
+###################################################
+
+def delete_account_form(user, session):
+	html="""
+<HTML>
+<HEAD>
+<TITLE>Info Form</TITLE>
+	<!-- Bootstrap core CSS -->
+        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</HEAD>
+
+<BODY background="bg.jpg">
+
+<center><H2 style="text-align: center; color:RED">!!! Account can not be restored once deleted</H2></center>
+
+<TABLE align=center>
+<FORM METHOD=post ACTION="login.cgi">
+</TABLE>
+
+<INPUT TYPE=hidden NAME="action" VALUE="delete_account">	
+<input type=hidden name="user" value={user}>
+<input type=hidden name="session" value={session}>
+<br>
+<div style="text-align: center">
+	<INPUT style="text-align: center" class="btn btn-lg btn-primary" TYPE=submit VALUE="Delete">
 </div>
 </FORM>
 
@@ -807,6 +843,18 @@ def main():
 				owner = form["user"].value
 				params = (encrypt(newpassword),owner)				
 				c.execute('UPDATE users SET password=? WHERE email=?', params)
+			login_form()
+		elif (action == "delete_account_form"):
+			delete_account_form(form["user"].value,form["session"].value)
+		elif (action == "delete_account"):
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				c = conn.cursor()
+				owner = (form["user"].value,)		
+				c.execute('DELETE FROM users WHERE email=? ', owner)
+				c.execute('DELETE FROM twitts WHERE owner = ? ', owner)
+				c.execute('DELETE FROM friendCircles WHERE owner = ? ', owner)
+				c.execute('DELETE FROM circleMembers WHERE username = ? ', owner)
 			login_form()
 		elif (action == "new-album"):
 			new_album(form)
