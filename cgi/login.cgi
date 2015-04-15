@@ -204,6 +204,20 @@ def display_admin_options(user, session):
               </div>
             </div>
 	 </div>
+	<div class="panel panel-default">
+            <div class="panel-body">
+              <div class="col-md-12">
+		 <h5 style-"opacity: 70%">Unfriend</h5>
+		 <form method=post action="login.cgi">
+                    <input type=email class="form-control" required name="message" placeholder="Username">
+		    <input type=hidden name="action" value="unfriend">
+		    <input type=hidden name="user" value={user}>
+		    <input type=hidden name="session" value={session}>
+		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Unfriend</button> 
+		 </form>
+              </div>
+            </div>
+	 </div>
 	 
 	<FORM METHOD=post ACTION="login.cgi">
    	<H4> reply to twitt id: </H4>
@@ -285,7 +299,7 @@ def display_admin_options(user, session):
 	}
 
 	// Execute every 60 seconds
-	window.setInterval(refreshData, 60000);*/
+	window.setInterval(refreshData, 600000000);*/
 	</script>
 	</html>
 	"""
@@ -475,7 +489,7 @@ def choose_friend_circle_form(user, session):
 		<INPUT type=hidden name="user" value={user}>
 		<INPUT type=hidden name="session" value={session}>
 		<br>
-		<INPUT class="btn btn-lg btn-primary"  TYPE=submit VALUE="Create">
+		<INPUT class="btn btn-lg btn-primary"  TYPE=submit VALUE="Create new Circle">
 	</div>
 	<br><br>
 
@@ -844,6 +858,8 @@ def main():
 				params = (encrypt(newpassword),owner)				
 				c.execute('UPDATE users SET password=? WHERE email=?', params)
 			login_form()
+
+################################################################################
 		elif (action == "delete_account_form"):
 			delete_account_form(form["user"].value,form["session"].value)
 		elif (action == "delete_account"):
@@ -856,6 +872,7 @@ def main():
 				c.execute('DELETE FROM friendCircles WHERE owner = ? ', owner)
 				c.execute('DELETE FROM circleMembers WHERE username = ? ', owner)
 			login_form()
+###############################################################################
 		elif (action == "new-album"):
 			new_album(form)
 		elif (action == "upload"):
@@ -866,6 +883,8 @@ def main():
 			upload_pic_data(form)
 		elif action == "show_feed":
 			display_admin_options(form["user"].value, form["session"].value)
+
+################################################################################################################################
 		elif action == "subscribe":
 			if "message" in form:		
 				target = form["message"].value
@@ -874,8 +893,20 @@ def main():
 					c = conn.cursor()
 					t = (form["user"].value,target)
 					c.execute('INSERT INTO subscribe(owner,target) VALUES (?,?)', t)
-
 				display_admin_options(form["user"].value, form["session"].value)
+
+################################################################################################################################
+		elif action == "unfriend":
+			if "message" in form:		
+				target = form["message"].value
+				conn = sqlite3.connect(DATABASE)
+				with conn:
+					c = conn.cursor()
+					t = (form["user"].value,target)
+					c.execute('DELETE FROM subscribe WHERE owner = ? AND target = ?', t)
+				display_admin_options(form["user"].value, form["session"].value)
+
+################################################################################################################################
 		elif action == "twitt":
 			if "message" in form:		
 				msg = form["message"].value
@@ -920,7 +951,7 @@ def main():
 			search_last_name_form(form)
 
 
-################################################################
+################################################################################################################################
 		elif action == "choose_friend_circle_form":
 			choose_friend_circle_form(form["user"].value, form["session"].value)
 		elif action == "add_friend_circle":
@@ -936,7 +967,7 @@ def main():
 					c.execute("INSERT INTO friendCircles (owner, friendCircleName) VALUES (?,?);",params)
 				choose_friend_circle_form(form["user"].value, form["session"].value)
 
-################################################################
+################################################################################################################################
 		elif action == "add_friend_circle_form":
 			add_friend_circle_form(form["user"].value, form["session"].value, 1) #    , form["selectedCircle"].value)
 		elif action == "add_member_to_the_circle":
@@ -950,7 +981,7 @@ def main():
 					params = (friendCircleID, username)
 					c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",params)
 				choose_friend_circle_form(form["user"].value, form["session"].value)
-################################################################
+################################################################################################################################
 		elif action == "remove_friend_circle_form":
 			remove_friend_circle_form(form["user"].value, form["session"].value, 1)
 		elif action == "remove_member_from_the_circle":
@@ -966,7 +997,7 @@ def main():
 				choose_friend_circle_form(form["user"].value, form["session"].value)
 
 
-################################################################
+################################################################################################################################
 		elif action == "search_last_name":
 			conn = sqlite3.connect(DATABASE)
 			msg = form["message"].value
