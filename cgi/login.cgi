@@ -223,7 +223,7 @@ def display_admin_options(user, session):
 	<!--   old code for PeteTwitt
 
 			<FORM METHOD=post ACTION="login.cgi">
-		   	<H4> reply to twitt id: </H4>
+		   	<H4> reply to post id: </H4>
 			<INPUT TYPE=text name="id">
 			<H4> content: </H4>
 			<INPUT TYPE=text name="message">
@@ -234,7 +234,7 @@ def display_admin_options(user, session):
 			</FORM>
 
 			<FORM METHOD=post ACTION="login.cgi">
-		   	<H4> retweet to twitt id: </H4>
+		   	<H4> retweet to post id: </H4>
 			<INPUT TYPE=text name="message">
 			<INPUT TYPE=hidden NAME="action" VALUE="retwitt">
 			<input type=hidden name="user" value={user}>
@@ -263,7 +263,8 @@ def display_admin_options(user, session):
 		<li> <a href="login.cgi?action=search_last_name_form&user={user}&session={session}">Search Users</a>
 		<li> <a href="login.cgi?action=choose_friend_circle_form&user={user}&session={session}">Manage Friend Circle</a>
 		</ul>
-		<h3> Latest Twitts </h3>
+		<br>
+		<h3> </h3>
 	<div id = content>
 		
 		"""
@@ -290,7 +291,7 @@ def display_admin_options(user, session):
 					print '<div>' 
 					print str(twit[1])+ " </div>"	
 					print '<div style="color : #337ab7">' 
-					print "Twitt id:" + str(twit[3]) + "|  Date:" + twit[0] + " |	" + "id: " + twit[2] + "</div><br>"
+					print "Post id:" + str(twit[3]) + "|  Date:" + twit[0] + " |	" + "id: " + twit[2] + "</div><br>"
 					now=twit[3]
 					for twit in data:
 						if (twit[4]==now):
@@ -300,7 +301,7 @@ def display_admin_options(user, session):
 							print ('</div>')
 							print "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  " + str(twit[1])+ " </div>"	
 							print '<div style="color : #337ab7">' 
-							print "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Reply: Twitt id:  " + str(twit[3]) + "| Date:" + twit[0] + " |	" + "id: " + twit[2] + "<br>"
+							print "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Reply: Post id:  " + str(twit[3]) + "| Date:" + twit[0] + " |	" + "id: " + twit[2] + "<br>"
 
 	scriptee = """</div></div>	</div>
    </div>
