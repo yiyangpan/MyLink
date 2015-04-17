@@ -188,6 +188,11 @@ def display_admin_options(user, session):
             <div class="panel-body">
               <div class="col-md-12">
 		 <h5 style-"opacity: 70%">New Post</h5>
+		<form action="/cgi-bin/checkbox.cgi" method="POST" target="_blank">
+		<input type="checkbox" name="Purdue" value="on" /> Purdue
+		<input type="checkbox" name="CS" value="on" /> CS
+		<input type="submit" value="Select Circle" />
+		</form>
 		 <form method=post action="login.cgi">
                     <textarea class="form-control" required name="message" rows="3" placeholder="What's on your mind?"></textarea>
 		    <input type=hidden name="action" value="twitt">
@@ -226,7 +231,7 @@ def display_admin_options(user, session):
               </div>
             </div>
 	 </div>
-	<!--   old code for PeteTwitt
+
 			<FORM METHOD=post ACTION="login.cgi">
 		   	<H4> reply to post id: </H4>
 			<INPUT TYPE=text name="id">
@@ -245,17 +250,7 @@ def display_admin_options(user, session):
 			<input type=hidden name="session" value={session}>
 			<INPUT TYPE=submit VALUE="retweet">
 			</FORM>
-	-->
-		<FORM METHOD=post ACTION="login.cgi">
-	   	<H4> post to following group(not finished, twitts need a new attribute for group display): </H4>
-		<INPUT TYPE=text name="id">
-		<H4> content: </H4>
-		<INPUT TYPE=text name="message">
-		<INPUT TYPE=hidden NAME="action" VALUE="reply">
-		<input type=hidden name="user" value={user}>
-		<input type=hidden name="session" value={session}>
-		<INPUT TYPE=submit VALUE="Reply">
-		</FORM>
+
 	</div>
 	<div class = "col-md-8">
 	<div class="panel panel-default">

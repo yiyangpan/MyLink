@@ -25,8 +25,6 @@ c.execute('''CREATE TABLE verify
 	      code TEXT NOT NULL
 		) ''')
 
-
-
 # Create twitts table
 c.execute('''CREATE TABLE twitts
 	     (	      
