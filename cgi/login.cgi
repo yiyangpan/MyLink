@@ -8,37 +8,40 @@ import session
 import time
 import string
 import random
+import smtplib
+import mimetypes
+from email.mime.multipart import MIMEMultipart
+# Import the email modules we'll need
 
 #Get Databasedir
-MYLOGIN="pan41"
+MYLOGIN="xiao67"
 DATABASE="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/picture_share.db"
 IMAGEPATH="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/images"
 
+##############################################################
+
+def send_email(receivers,code):
+	sender = 'xiao67@purdue.edu'
 
 
+	msg = MIMEMultipart()
+
+	#msg['Subject'] = 'Your verification code is %s' %  code
+	msg['Subject'] = 'Your verification code is %s' %  code
+
+	msg['From'] = "grr"
+	msg['To'] = receivers
+
+
+	smtpObj = smtplib.SMTP('localhost')
+	smtpObj.sendmail(sender, receivers, msg.as_string()+code)      
 
 ##############################################################
 def id_generator(size=10):
-	chars=string.ascii_lowercase + string.ascii_uppercase +string.digits
+	chars=string.ascii_uppercase +string.digits
 	s=""
 	for i in range (0,size):
 		s+=random.choice(chars)
-	return s
-
-random_string =["RVszcK4IVXYZzq4","Me4Zdk7Hp9g7SXQ","uAhp88nyMHoxHry","kBX3L0DTnb61WEX","WwcPbN3MQ91EkW3","eEhMzwsC1iOJfuE","Md37DWub1LBM1Ci","lvrcxxqliT5P2Rg","jNwt8jI5FsceiEJ","jAj0WjtIltgqcHW","5feZacndHU45kqg","kSOk784fbl2ahPu","C1f0jCBm6UJe0Nu","IWgpvrzuwf858q6","f8E7tIDJtPbxMgM","sWmqy4a97EZtNoD","3LkPFgf5ygflbJ2","TiVLlOhYLwAVnlE","geuAQFr99JFMioM","zX71DL7CGKpdsvC"]
-
-##############################################################
-def encrypt(password):
-	s=""
-	i=0
-	j=0
-	for ch in password:
-		i+=67
-		j+=97
-		s=s+random_string[(ord(ch) - 1+i)%15][min((ord(ch)*2),j) % 15:max((ord(ch)*2),j) % 15]
-
-	#login_form()
-	#print s
 	return s
 
 ##############################################################
@@ -84,7 +87,8 @@ def login_form():
 
 #########################################################
 # Define function to generate signup HTML form.
-def signup_form():
+def signup_form(form):
+
 	html="""
 <HTML>
 <HEAD>
@@ -99,10 +103,10 @@ def signup_form():
 <H3 style="text-align: center; color:white">Type User and Password:</H3>
 <TABLE align=center >
 <FORM METHOD=post ACTION="login.cgi" style="text-align: center">
-<TR ><TH style="text-align: center; color:white">First name:</TH><TD><INPUT TYPE=text NAME="first_name" ></TD><TR>
-<TR ><TH style="text-align: center; color:white">Last name:</TH><TD><INPUT TYPE=text NAME="last_name"></TD><TR>
-<TR ><TH style="text-align: center; color:white">Email:</TH><TD><INPUT TYPE=text NAME="email"></TD><TR>
-<TR ><TH style="text-align: center; color:white">Password:</TH><TD><INPUT TYPE=password NAME="password"></TD></TR>
+<TR ><TH style="text-align: center; color:white">First name:</TH><TD><INPUT TYPE=text NAME="first_name" required></TD><TR>
+<TR ><TH style="text-align: center; color:white">Last name:</TH><TD><INPUT TYPE=text NAME="last_name" required></TD><TR>
+<TR ><TH style="text-align: center; color:white">Email:</TH><TD><INPUT TYPE=text NAME="email" requiredfocus></TD><TR>
+<TR ><TH style="text-align: center; color:white">Password:</TH><TD><INPUT TYPE=password NAME="password" required></TD></TR>
 </TABLE>
 <INPUT TYPE=hidden NAME="action" VALUE="add_user" style="text-align: center">	
 <input type=hidden name="user" value={user} style="text-align: center">
@@ -115,6 +119,26 @@ def signup_form():
 """
 	print_html_content_type()
 	print(html)
+
+def verification_form(form):
+	html='''
+	<br><br><br><br>
+	<FORM METHOD=post ACTION="login.cgi" style="text-align: center">
+	<div>
+	<TH style="text-align: center; color:white">Enter the verification code:</TH>
+	</div>
+	<TD><INPUT TYPE=text NAME="verification" ></TD>
+	<INPUT TYPE=hidden NAME="action" VALUE="verify" style="text-align: center">	
+<input type=hidden name="user" value={user} style="text-align: center">
+<input type=hidden name="session" value={session} style="text-align: center">
+
+
+	<INPUT class="btn btn-sm btn-primary" TYPE=submit VALUE="Verify">
+	</FORM>
+	'''
+	print(html)
+
+
 
 ##########################################################
 # Main page after login
@@ -441,6 +465,7 @@ def search_last_name_form(form):
 ###################################################################
 
 def choose_friend_circle_form(user, session):
+
 	html="""
 		<HTML>
 <HEAD>
@@ -467,6 +492,7 @@ def choose_friend_circle_form(user, session):
 <table align="center">
 	<tr>
 		<td style="color:white">Choose an existing friend circle to manage members</td>
+
 		<td align="left">
 
 		<FORM METHOD=post ACTION="login.cgi">
@@ -478,6 +504,7 @@ def choose_friend_circle_form(user, session):
 
 
 """
+
 
 	print_html_content_type()
 	print(html.format(user=user,session=session))
@@ -505,7 +532,15 @@ def choose_friend_circle_form(user, session):
 	<br>
 	</table>
 	<br>
+<<<<<<< HEAD
 
+=======
+		<div style="text-align: center">
+					{user}
+			<a style="text-align: center; color:white"  class="btn btn-lg btn-primary" href="login.cgi?action=add_friend_circle_form&user={user}&session={session}">Add</a>
+			<a style="text-align: center; color:white"  class="btn btn-lg btn-primary" href="login.cgi?action=remove_friend_circle_form&user={user}&session={session}">Remove</a>
+		</div>
+>>>>>>> b1b29109591c870d644fd74a56db6fdf6ba926cb
 	<br>
 	<p id="output"></p>
 	<script>
@@ -524,7 +559,11 @@ def choose_friend_circle_form(user, session):
 	</HTML>
 			"""
 
+<<<<<<< HEAD
 	print (restHTML.format(user=user,session=session))
+=======
+	print restHTML.format(user=user,session=session)
+>>>>>>> b1b29109591c870d644fd74a56db6fdf6ba926cb
 
 ###################################################################
 
@@ -788,28 +827,50 @@ def main():
 					if validate(username,password)==0:
 					   login_form()
 					   print("<H3><font color=\"red\">Invalid email/password (are you trying to inject our sql you bitch?)</font></H3>")
-					elif check_password(username, encrypt(password))=="passed":
+					elif check_password(username, password)=="passed":
 					   session=create_new_session(username)
 					   display_admin_options(username, session)
 					else:
 					   login_form()
 					   print("<H3><font color=\"red\">Incorrect email/password</font></H3>")
 		elif action == "signup":
-			signup_form()
+			signup_form(form)
+
+		
 		elif action == "add_user":
-			if "email" in form and "password" in form and "first_name" in form and "last_name" in form:
+				signup_form(form)
+				verification_form(form)
+				code=id_generator(6)
 				username=form["email"].value
 				password=form["password"].value
 				first_name=form["first_name"].value
-				last_name=form["last_name"].value		
+				last_name=form["last_name"].value
 				conn = sqlite3.connect(DATABASE)
 				with conn:
 					c = conn.cursor()
-					t = (username,first_name,last_name,encrypt(password))
-					c.execute("INSERT INTO users VALUES (?,?,?,?);",t)
+					t = (username,first_name,last_name,password,code)
+					c.execute("INSERT INTO verify VALUES (?,?,?,?,?);",t)
+				send_email(form["email"].value,code)
+		elif action == "verify":
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				c = conn.cursor()
+				c.execute("SELECT * FROM verify order by rowid desc")
+				row=c.fetchone()
+				correct_code=(row[4])
+			user_code=form["verification"].value
+
+			if user_code!=correct_code:
+				signup_form(form)
+				verification_form(form)
+				print("whoooops")
+			else:
+				conn = sqlite3.connect(DATABASE)
 				with conn:
 					c = conn.cursor()
-					t = (username,username)
+					t = (row[0],row[1],row[2],row[3])
+					c.execute("INSERT INTO users VALUES (?,?,?,?);",t)
+					t = (row[0],row[0])
 					c.execute('INSERT INTO subscribe(owner,target) VALUES (?,?)', t)
 				login_form()
 		elif (action == "change_password_form"):
@@ -820,7 +881,7 @@ def main():
 			with conn:
 				c = conn.cursor()
 				owner = form["user"].value
-				params = (encrypt(newpassword),owner)				
+				params = (newpassword,owner)				
 				c.execute('UPDATE users SET password=? WHERE email=?', params)
 			login_form()
 

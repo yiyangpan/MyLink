@@ -16,6 +16,17 @@ c.execute('''CREATE TABLE users
 	      last_name TEXT NOT NULL,
 	      password TEXT NOT NULL)''')
 
+c.execute('''CREATE TABLE verify
+	     (	      
+	      email TEXT NOT NULL, 
+		first_name TEXT NOT NULL, 
+	      last_name TEXT NOT NULL,
+	      password TEXT NOT NULL,
+	      code TEXT NOT NULL
+		) ''')
+
+
+
 # Create twitts table
 c.execute('''CREATE TABLE twitts
 	     (	      
