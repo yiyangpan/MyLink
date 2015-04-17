@@ -52,16 +52,12 @@ def login_form():
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="">
         <meta name="author" content="">
-
 	<title>MyLink</title>
-
 	<!-- Bootstrap core CSS -->
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 	<!-- Custom styles for this template -->
 	<link href="signin.css" rel="stylesheet">
 	</head>
-
 	<body background="bg.jpg">
 	<div class="container">
 	<form method=post action="login.cgi" class="form-signin" role="form">	
@@ -76,9 +72,7 @@ def login_form():
 	<input type="hidden" name="action" value="login">
 	<a href="login.cgi?action=signup" class="btn btn-link btn-lg btn-block" role="button" style="color:white">Register</a>
 	</form>
-
 	</div> <!-- /container -->
-
 	<!-- Bootstrap core JavaScript ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	
@@ -97,17 +91,12 @@ def signup_form():
 <TITLE>Info Form</TITLE>
 <!-- Bootstrap core CSS -->
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <!-- Custom styles for this template -->
 <link href="signup.css" rel="stylesheet">
 </HEAD>
-
 <BODY background="bg.jpg" style="text-align: center">
-
 <center><H2 style="text-align: center; color:white">Register</H2></center>
-
 <H3 style="text-align: center; color:white">Type User and Password:</H3>
-
 <TABLE align=center >
 <FORM METHOD=post ACTION="login.cgi" style="text-align: center">
 <TR ><TH style="text-align: center; color:white">First name:</TH><TD><INPUT TYPE=text NAME="first_name" ></TD><TR>
@@ -115,14 +104,12 @@ def signup_form():
 <TR ><TH style="text-align: center; color:white">Email:</TH><TD><INPUT TYPE=text NAME="email"></TD><TR>
 <TR ><TH style="text-align: center; color:white">Password:</TH><TD><INPUT TYPE=password NAME="password"></TD></TR>
 </TABLE>
-
 <INPUT TYPE=hidden NAME="action" VALUE="add_user" style="text-align: center">	
 <input type=hidden name="user" value={user} style="text-align: center">
 <input type=hidden name="session" value={session} style="text-align: center">
 <br>
 <INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Register" >
 </FORM>
-
 </BODY>
 </HTML>
 """
@@ -146,7 +133,6 @@ def display_admin_options(user, session):
 	<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
     </head>
-
 	<body background="bg.jpg">
 	<header class="navbar navbar-default navbar-static-top">
   <div class="container">
@@ -218,10 +204,7 @@ def display_admin_options(user, session):
               </div>
             </div>
 	 </div>
-
-
 	<!--   old code for PeteTwitt
-
 			<FORM METHOD=post ACTION="login.cgi">
 		   	<H4> reply to post id: </H4>
 			<INPUT TYPE=text name="id">
@@ -232,7 +215,6 @@ def display_admin_options(user, session):
 			<input type=hidden name="session" value={session}>
 			<INPUT TYPE=submit VALUE="Reply">
 			</FORM>
-
 			<FORM METHOD=post ACTION="login.cgi">
 		   	<H4> retweet to post id: </H4>
 			<INPUT TYPE=text name="message">
@@ -242,7 +224,6 @@ def display_admin_options(user, session):
 			<INPUT TYPE=submit VALUE="retweet">
 			</FORM>
 	-->
-
 		<FORM METHOD=post ACTION="login.cgi">
 	   	<H4> post to following group(not finished, twitts need a new attribute for group display): </H4>
 		<INPUT TYPE=text name="id">
@@ -253,7 +234,6 @@ def display_admin_options(user, session):
 		<input type=hidden name="session" value={session}>
 		<INPUT TYPE=submit VALUE="Reply">
 		</FORM>
-
 	</div>
 	<div class = "col-md-8">
 	<div class="panel panel-default">
@@ -313,7 +293,6 @@ def display_admin_options(user, session):
 	{
 	//    $('#content').load('login.cgi?action=show_feed&user={user}&session={session}');
 	}
-
 	// Execute every 60 seconds
 	window.setInterval(refreshData, 600000000);*/
 	</script>
@@ -330,18 +309,13 @@ def change_password_form(user, session):
 <TITLE>Info Form</TITLE>
 	<!-- Bootstrap core CSS -->
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </HEAD>
-
 <BODY background="bg.jpg">
-
 <center><H2 style="text-align: center; color:white">Change the password</H2></center>
-
 <TABLE align=center>
 <FORM METHOD=post ACTION="login.cgi">
 <TR><TH style="text-align: center; color:white">New Password:</TH><TD ><INPUT TYPE=password NAME="password"></TD></TR>
 </TABLE>
-
 <INPUT TYPE=hidden NAME="action" VALUE="change_password">	
 <input type=hidden name="user" value={user}>
 <input type=hidden name="session" value={session}>
@@ -350,7 +324,6 @@ def change_password_form(user, session):
 	<INPUT style="text-align: center" class="btn btn-lg btn-primary" TYPE=submit VALUE="Submit">
 </div>
 </FORM>
-
 </BODY>
 </HTML>
 """
@@ -367,17 +340,12 @@ def delete_account_form(user, session):
 <TITLE>Info Form</TITLE>
 	<!-- Bootstrap core CSS -->
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </HEAD>
-
 <BODY background="bg.jpg">
-
 <center><H2 style="text-align: center; color:RED">!!! Account can not be restored once deleted</H2></center>
-
 <TABLE align=center>
 <FORM METHOD=post ACTION="login.cgi">
 </TABLE>
-
 <INPUT TYPE=hidden NAME="action" VALUE="delete_account">	
 <input type=hidden name="user" value={user}>
 <input type=hidden name="session" value={session}>
@@ -386,7 +354,6 @@ def delete_account_form(user, session):
 	<INPUT style="text-align: center" class="btn btn-lg btn-primary" TYPE=submit VALUE="Delete">
 </div>
 </FORM>
-
 </BODY>
 </HTML>
 """
@@ -409,11 +376,9 @@ def upload(form):
 			<TITLE>Upload Avatar</TITLE>
 			<!-- Bootstrap core CSS -->
     		<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 			<!-- Custom styles for this template -->
 			<link href="upload.css" rel="stylesheet">
 		</HEAD>
-
 		<BODY background="bg.jpg">
 		<FORM ACTION="login.cgi" METHOD="POST" enctype="multipart/form-data">
 			<input type="hidden" name="user" value="{user}">
@@ -453,16 +418,12 @@ def search_last_name_form(form):
 <!-- Bootstrap core CSS -->
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 </HEAD>
-
 <BODY background="bg.jpg">
-
 <center><H2 style="text-align: center; color:white">Find friends on MyLink</H2></center>
-
 <TABLE BORDER = 0>
 <FORM METHOD=post ACTION="login.cgi">
 <TR><TH style="text-align: center; color:white">Last name:</TH><TD><INPUT TYPE="text" NAME="message"></TD></TR>
 </TABLE>
-
 <INPUT TYPE=hidden NAME="action" VALUE="search_last_name">	
 <input type=hidden name="user" value={user}>
 <input type=hidden name="session" value={session}>
@@ -484,17 +445,12 @@ def choose_friend_circle_form(user, session):
 		<HTML>
 <HEAD>
 <TITLE>Info Form</TITLE>
-
 <!-- Bootstrap core CSS -->
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="myscripts.js"></script>
-
 </HEAD>
-
 <BODY background="bg.jpg">
-
 <center><H2 style="text-align: center; color:white">Choose or Create a Friend Circle</H2></center>
-
 <TABLE align=center>
 <FORM METHOD=post ACTION="login.cgi">
 <TR><TH style="text-align: center; color:white">TO create a new circle</TH><TD><INPUT TYPE="text" NAME="new_friend_circle"></TD></TR>
@@ -507,12 +463,20 @@ def choose_friend_circle_form(user, session):
 		<INPUT class="btn btn-lg btn-primary"  TYPE=submit VALUE="Create new Circle">
 	</div>
 	<br><br>
-
 </FORM>
 <table align="center">
 	<tr>
 		<td style="color:white">Choose an existing friend circle to manage members</td>
 		<td align="left">
+
+		<FORM METHOD=post ACTION="login.cgi">
+
+			<INPUT TYPE=hidden NAME="action" VALUE="add_friend_circle_form">	
+			<INPUT type=hidden name="user" value={user}>
+			<INPUT type=hidden name="session" value={session}>
+			<br>
+
+
 """
 
 	print_html_content_type()
@@ -527,25 +491,27 @@ def choose_friend_circle_form(user, session):
 		data3 = c.fetchall()
 	# generate the javascript selection list
 
-	print(makeSelect('selectCircle',data3))
+	print(makeSelect('selectCircleDropdown',data3))
 	restHTML = """
+			<div style="text-align: center">
+				<input type="submit" style="text-align: center; color:white"  class="btn btn-lg btn-primary" value = "Add" href="login.cgi?action=add_friend_circle_form&user={user}&session={session}"></a>
+				<input type="submit" style="text-align: center; color:white"  class="btn btn-lg btn-primary" value = "Remove" href="login.cgi?action=remove_friend_circle_form&user={user}&session={session}"></a>
+			</div>
+			</FORM>
+			
 
 		</td>
 	</tr>
 	<br>
 	</table>
 	<br>
-		<div style="text-align: center">
-			<a style="text-align: center; color:white"  class="btn btn-lg btn-primary" href="login.cgi?action=add_friend_circle_form&user={user}&session={session}">Add</a>
-			<a style="text-align: center; color:white"  class="btn btn-lg btn-primary" href="login.cgi?action=remove_friend_circle_form&user={user}&session={session}">Remove</a>
-		</div>
+
 	<br>
 	<p id="output"></p>
 	<script>
 			var selector = document.getElementById('selectCircle');
     		var selectedOption = selector[selector.selectedIndex].value;
 			<!--document.getElementById("output").innerHTML = selectedOption;-->
-
 			<!-- create a hidden input to store the selected Friend Circle -->
 			var input = document.createElement("input");
 			input.setAttribute("type", "hidden");
@@ -558,7 +524,7 @@ def choose_friend_circle_form(user, session):
 	</HTML>
 			"""
 
-	print restHTML
+	print (restHTML.format(user=user,session=session))
 
 ###################################################################
 
@@ -570,11 +536,9 @@ def add_friend_circle_form(user, session, circleID):
 			<head>
 			<!-- Bootstrap core CSS -->
 				<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 			<title>Add Option Items </title>
 			<script src="myscripts.js"></script>
 			</head>
-
 			<body background="bg.jpg">
 			<center><H2 style="text-align: center; color:white">Add friends to the circle</H2></center>
 			<table align="center">
@@ -598,11 +562,8 @@ def add_friend_circle_form(user, session, circleID):
 	restHTML = """
 			</td>
 			</tr>
-
 			</td>
 			</table>
-
-
 			<br><br>
 			<TABLE align=center>
 			<FORM METHOD=post ACTION="login.cgi">
@@ -616,15 +577,12 @@ def add_friend_circle_form(user, session, circleID):
 					<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Add Friend">
 				</div>
 				<br><br>
-
 			</FORM>
-
-
 			</body>
 			</HTML>
 		"""
 
-	print(restHTML)
+	print(restHTML.format(user=user,session=session))
 
 #################################################################
 
@@ -641,7 +599,6 @@ def remove_friend_circle_form(user, session, circleID):
 			<title>Add Option Items </title>
 			<script src="myscripts.js"></script>
 			</head>
-
 			<body background="bg.jpg">
 			<center><H2 style="text-align: center; color:white">Remove friends from the circle</H2></center>
 			<table align="center">
@@ -665,7 +622,6 @@ def remove_friend_circle_form(user, session, circleID):
 	restHTML = """
 			</td>
 			</tr>
-
 			<td align="center">                        
 				<!--<input name="btnRemoveItem" type="button" id="btnRemoveItem" value="Remove Friend" onClick="javaScript:removeListItem();" /></td>-->
 				
@@ -673,7 +629,6 @@ def remove_friend_circle_form(user, session, circleID):
 						var selector = document.getElementById('selectFriends');
 						var selectedOption = selector[selector.selectedIndex].value;
 						<!--document.getElementById("output").innerHTML = selectedOption;-->
-
 						<!-- create a hidden input to store the selected Friend Circle -->
 						var input = document.createElement("input");
 						input.setAttribute("type", "hidden");
@@ -684,8 +639,6 @@ def remove_friend_circle_form(user, session, circleID):
 				</script>
 			</td>
 			</table>
-
-
 			<br><br>
 			<TABLE align=center>
 			<FORM METHOD=post ACTION="login.cgi">
@@ -699,7 +652,6 @@ def remove_friend_circle_form(user, session, circleID):
 					<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Remove Friend">
 				</div>
 				<br><br>
-
 			</FORM>
 			</body>
 			</HTML>
@@ -981,8 +933,24 @@ def main():
 				choose_friend_circle_form(form["user"].value, form["session"].value)
 
 ################################################################################################################################
+
 		elif action == "add_friend_circle_form":
-			add_friend_circle_form(form["user"].value, form["session"].value, 1) #    , form["selectedCircle"].value)
+			print "Content-type: text/html\n\n";
+			print (form.getvalue('selectCircleDropdown'))
+			print (form['user'].value)
+			# Get data from fields
+			if form.getvalue('selectCircleDropdown'):
+			   selectedCircleName = form.getvalue('selectCircleDropdown')
+			else:
+			   selectedCircleName = "Not entered"
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				conn.text_factory = str
+				c = conn.cursor()
+				params = ('LOL', form["user"].value)
+				c.execute("SELECT friendCircleID FROM friendCircles WHERE friendCircleName = ? AND owner = ?;",params)
+				selectedCircleID = c.fetchone()[0]
+			add_friend_circle_form(form["user"].value, form["session"].value, selectedCircleID)
 		elif action == "add_member_to_the_circle":
 			if "friend_name" in form:
 				username = form["friend_name"].value
@@ -1037,3 +1005,4 @@ def main():
 ###############################################################
 # Call main function.
 main()
+

@@ -24,6 +24,7 @@ c.execute('''CREATE TABLE twitts
 	      owner TEXT NOT NULL,
 	      id INTEGER PRIMARY KEY AUTOINCREMENT,
 	      parent INT NOT NULL,
+		  friendCircleID INT NOT NULL,
 	      FOREIGN KEY(owner) REFERENCES users(email)
 	      )''')
 
