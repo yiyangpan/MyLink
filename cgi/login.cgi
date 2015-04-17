@@ -516,9 +516,10 @@ def choose_friend_circle_form(user, session):
 		c = conn.cursor()
 		c.execute("SELECT friendCircleName FROM friendCircles where owner=? ",t)
 		data3 = c.fetchall()
+		data3List = [i[0] for i in data3]
 	# generate the javascript selection list
 
-	print(makeSelect('selectCircleDropdown',data3))
+	print(makeSelect('selectCircleDropdown',data3List))
 	nextHTML = """
 				<br><br>
 
@@ -555,9 +556,10 @@ def choose_friend_circle_form(user, session):
 		c = conn.cursor()
 		c.execute("SELECT friendCircleName FROM friendCircles where owner=? ",t)
 		data3 = c.fetchall()
+		data3List = [i[0] for i in data3]
 	# generate the javascript selection list
 
-	print(makeSelect('selectCircleDropdown',data3))
+	print(makeSelect('selectCircleDropdown',data3List))
 	restHTML = """
 				<br><br>
 
@@ -606,8 +608,9 @@ def add_friend_to_circle_form(user, session, circleID):
 		c = conn.cursor()
 		c.execute("SELECT username FROM circleMembers WHERE friendCircleID = ? ", t )
 		data4 = c.fetchall()
+		data4List = [i[0] for i in data4]
 	# generate the javascript selection list
-	print(makeSelect('selectFriendsToAdd',data4))
+	print(makeSelect('selectFriendsToAdd',data4List))
 
 	restHTML = """
 			</td>
@@ -669,9 +672,10 @@ def remove_friend_from_circle_form(user, session, circleID):
 	with conn:
 		c = conn.cursor()
 		c.execute("SELECT username FROM circleMembers WHERE friendCircleID = ? ", t )
-		data5 = c.fetchall()	
+		data5 = c.fetchall()
+		data5List = [i[0] for i in data5]	
 	# generate the javascript selection list
-	print(makeSelect('selectFriendsToRemove',data5))
+	print(makeSelect('selectFriendsToRemove',data5List))
 
 	restHTML = """
 
