@@ -14,7 +14,7 @@ from email.mime.multipart import MIMEMultipart
 # Import the email modules we'll need
 
 #Get Databasedir
-MYLOGIN="xiao67"
+MYLOGIN="pan41"
 DATABASE="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/picture_share.db"
 IMAGEPATH="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/images"
 
@@ -131,8 +131,6 @@ def verification_form(form):
 	<INPUT TYPE=hidden NAME="action" VALUE="verify" style="text-align: center">	
 <input type=hidden name="user" value={user} style="text-align: center">
 <input type=hidden name="session" value={session} style="text-align: center">
-
-
 	<INPUT class="btn btn-sm btn-primary" TYPE=submit VALUE="Verify">
 	</FORM>
 	'''
@@ -465,7 +463,6 @@ def search_last_name_form(form):
 ###################################################################
 
 def choose_friend_circle_form(user, session):
-
 	html="""
 		<HTML>
 <HEAD>
@@ -492,7 +489,6 @@ def choose_friend_circle_form(user, session):
 <table align="center">
 	<tr>
 		<td style="color:white">Choose an existing friend circle to manage members</td>
-
 		<td align="left">
 
 		<FORM METHOD=post ACTION="login.cgi">
@@ -504,7 +500,6 @@ def choose_friend_circle_form(user, session):
 
 
 """
-
 
 	print_html_content_type()
 	print(html.format(user=user,session=session))
@@ -532,15 +527,7 @@ def choose_friend_circle_form(user, session):
 	<br>
 	</table>
 	<br>
-<<<<<<< HEAD
 
-=======
-		<div style="text-align: center">
-					{user}
-			<a style="text-align: center; color:white"  class="btn btn-lg btn-primary" href="login.cgi?action=add_friend_circle_form&user={user}&session={session}">Add</a>
-			<a style="text-align: center; color:white"  class="btn btn-lg btn-primary" href="login.cgi?action=remove_friend_circle_form&user={user}&session={session}">Remove</a>
-		</div>
->>>>>>> b1b29109591c870d644fd74a56db6fdf6ba926cb
 	<br>
 	<p id="output"></p>
 	<script>
@@ -559,11 +546,7 @@ def choose_friend_circle_form(user, session):
 	</HTML>
 			"""
 
-<<<<<<< HEAD
 	print (restHTML.format(user=user,session=session))
-=======
-	print restHTML.format(user=user,session=session)
->>>>>>> b1b29109591c870d644fd74a56db6fdf6ba926cb
 
 ###################################################################
 
@@ -696,7 +679,7 @@ def remove_friend_circle_form(user, session, circleID):
 			</HTML>
 		"""
 
-	print(restHTML)
+	print(restHTML.format(user=user,session=session))
 
 #################################################################
 def makeSelect(name,values):
@@ -1023,6 +1006,8 @@ def main():
 					params = (friendCircleID, username)
 					c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",params)
 				choose_friend_circle_form(form["user"].value, form["session"].value)
+
+
 ################################################################################################################################
 		elif action == "remove_friend_circle_form":
 			remove_friend_circle_form(form["user"].value, form["session"].value, 1)
@@ -1066,4 +1051,3 @@ def main():
 ###############################################################
 # Call main function.
 main()
-

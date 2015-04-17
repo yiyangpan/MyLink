@@ -19,7 +19,7 @@ c.execute('''CREATE TABLE users
 c.execute('''CREATE TABLE verify
 	     (	      
 	      email TEXT NOT NULL, 
-		first_name TEXT NOT NULL, 
+		  first_name TEXT NOT NULL, 
 	      last_name TEXT NOT NULL,
 	      password TEXT NOT NULL,
 	      code TEXT NOT NULL
