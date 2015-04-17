@@ -151,7 +151,7 @@ def display_admin_options(user, session):
 	<head color>
 	<title>MyLink: Feed</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="refresh" content="8;url=login.cgi?action=show_feed&user={user}&session={session}">
+	<meta  content="8;url=login.cgi?action=show_feed&user={user}&session={session}">                <!-- if want auto refresh add http-equiv="refresh" -->
 	<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
     </head>
@@ -188,12 +188,22 @@ def display_admin_options(user, session):
             <div class="panel-body">
               <div class="col-md-12">
 		 <h5 style-"opacity: 70%">New Post</h5>
-		<form action="/cgi-bin/checkbox.cgi" method="POST" target="_blank">
-		<input type="checkbox" name="Purdue" value="on" /> Purdue
-		<input type="checkbox" name="CS" value="on" /> CS
-		<input type="submit" value="Select Circle" />
-		</form>
-		 <form method=post action="login.cgi">
+		<form METHOD=post ACTION="login.cgi">
+	"""
+	print_html_content_type()
+	print(html.format(user=user,session=session))
+
+	# get the list of friend circles from the database
+	conn = sqlite3.connect(DATABASE)
+	t = (user,)
+	with conn:
+		c = conn.cursor()
+		c.execute("SELECT friendCircleName FROM friendCircles where owner=? ",t)
+		listData = c.fetchall()
+		MyList = [i[0] for i in listData]
+	print (makeCheckbox(MyList))
+	nextHTML = """
+
                     <textarea class="form-control" required name="message" rows="3" placeholder="What's on your mind?"></textarea>
 		    <input type=hidden name="action" value="twitt">
 		    <input type=hidden name="user" value={user}>
@@ -270,8 +280,8 @@ def display_admin_options(user, session):
 		#cgi can check that the user has been authenticated
 
 
-	print_html_content_type()
-	print(html.format(user=user,session=session))
+
+	print(nextHTML.format(user=user,session=session))
 	conn = sqlite3.connect(DATABASE)
 	t = (user,)
 	with conn:
@@ -311,7 +321,7 @@ def display_admin_options(user, session):
 	//    $('#content').load('login.cgi?action=show_feed&user={user}&session={session}');
 	}
 	// Execute every 60 seconds
-	window.setInterval(refreshData, 600000000);*/
+	window.setInterval(refreshData, 6000000);*/
 	</script>
 	</html>
 	"""
@@ -693,6 +703,13 @@ def makeSelect(name,values):
 
 
 
+#################################################################
+def makeCheckbox(values):
+	rest = ""
+	for v in values:
+		rest = rest + '<INPUT type="checkbox" value="'+ v + '" name="checkbox" id="' + v + '" />' + v+'\n'
+	return rest
+
 ###################################################################
 # Define function to test the password.
 def check_password(user, passwd):
@@ -921,15 +938,20 @@ def main():
 
 ################################################################################################################################
 		elif action == "twitt":
-			if "message" in form:		
+			if "message" in form:
+				checkboxes = form.getlist('checkbox')
 				msg = form["message"].value
 				if (validate_tweet(msg)!=0):
 					now = time.strftime('%Y-%m-%d %H:%M:%S')
 					conn = sqlite3.connect(DATABASE)
 					with conn:
 						c = conn.cursor()
-						t = (now,msg,form["user"].value,0)
-						c.execute("INSERT INTO twitts(time,msg,owner,parent) VALUES (?,?,?,?)",t)
+						for selectedCircleName in checkboxes:
+							params = (selectedCircleName.replace("(u'", "").replace("',)", ""), form["user"].value)
+							c.execute("SELECT friendCircleID FROM friendCircles WHERE friendCircleName = ? AND owner = ?;",params)
+							selectedCircleID = c.fetchone()[0]
+							t = (now,msg,form["user"].value,0,selectedCircleID)
+							c.execute("INSERT INTO twitts(time,msg,owner,parent,friendCircleID) VALUES (?,?,?,?,?)",t)
 					display_admin_options(form["user"].value, form["session"].value)
 				else:
 					display_admin_options(form["user"].value, form["session"].value)
