@@ -493,7 +493,7 @@ def choose_friend_circle_form(user, session):
 
 		<FORM METHOD=post ACTION="login.cgi">
 
-			<INPUT TYPE=hidden NAME="action" VALUE="add_friend_circle_form">	
+			<INPUT TYPE=hidden NAME="action" VALUE="add_friend_to_circle_form">	
 			<INPUT type=hidden name="user" value={user}>
 			<INPUT type=hidden name="session" value={session}>
 			<br>
@@ -516,8 +516,8 @@ def choose_friend_circle_form(user, session):
 	print(makeSelect('selectCircleDropdown',data3))
 	restHTML = """
 			<div style="text-align: center">
-				<input type="submit" style="text-align: center; color:white"  class="btn btn-lg btn-primary" value = "Add" href="login.cgi?action=add_friend_circle_form&user={user}&session={session}"></a>
-				<input type="submit" style="text-align: center; color:white"  class="btn btn-lg btn-primary" value = "Remove" href="login.cgi?action=remove_friend_circle_form&user={user}&session={session}"></a>
+				<input type="submit" style="text-align: center; color:white"  class="btn btn-lg btn-primary" value = "Add" href="login.cgi?action=add_friend_to_circle_form&user={user}&session={session}"></a>
+				<input type="submit" style="text-align: center; color:white"  class="btn btn-lg btn-primary" value = "Remove" href="login.cgi?action=remove_friend_from_circle_form&user={user}&session={session}"></a>
 			</div>
 			</FORM>
 			
@@ -550,7 +550,7 @@ def choose_friend_circle_form(user, session):
 
 ###################################################################
 
-def add_friend_circle_form(user, session, circleID):
+def add_friend_to_circle_form(user, session, circleID):
 
 	html="""
 		<HTML>
@@ -595,6 +595,7 @@ def add_friend_circle_form(user, session, circleID):
 					<INPUT TYPE=hidden NAME="action" VALUE="add_member_to_the_circle">	
 					<INPUT type=hidden name="user" value={user}>
 					<INPUT type=hidden name="session" value={session}>
+					<INPUT type=hidden name="circleID" value={circleID}>
 					<br>
 					<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Add Friend">
 				</div>
@@ -604,12 +605,12 @@ def add_friend_circle_form(user, session, circleID):
 			</HTML>
 		"""
 
-	print(restHTML.format(user=user,session=session))
+	print(restHTML.format(user=user,session=session, circleID= circleID))
 
 #################################################################
 
 
-def remove_friend_circle_form(user, session, circleID):
+def remove_friend_from_circle_form(user, session, circleID):
 
 	html="""
 		<HTML>
@@ -670,6 +671,7 @@ def remove_friend_circle_form(user, session, circleID):
 					<INPUT TYPE=hidden NAME="action" VALUE="remove_member_from_the_circle">	
 					<INPUT type=hidden name="user" value={user}>
 					<INPUT type=hidden name="session" value={session}>
+					<INPUT type=hidden name="circleID" value={circleID}>
 					<br><br>
 					<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Remove Friend">
 				</div>
@@ -978,39 +980,38 @@ def main():
 
 ################################################################################################################################
 
-		elif action == "add_friend_circle_form":
+		elif action == "add_friend_to_circle_form":
 			print "Content-type: text/html\n\n";
-			print (form.getvalue('selectCircleDropdown'))
-			print (form['user'].value)
+			#print (form.getvalue('selectCircleDropdown'))
+			#print (form['user'].value)
 			# Get data from fields
 			if form.getvalue('selectCircleDropdown'):
-			   selectedCircleName = form.getvalue('selectCircleDropdown')
+			   selectedCircleName = str(form.getvalue('selectCircleDropdown'))
 			else:
 			   selectedCircleName = "Not entered"
 			conn = sqlite3.connect(DATABASE)
 			with conn:
 				conn.text_factory = str
 				c = conn.cursor()
-				params = ('LOL', form["user"].value)
+				params = (selectedCircleName.replace("(u'", "").replace("',)", ""), form["user"].value)
 				c.execute("SELECT friendCircleID FROM friendCircles WHERE friendCircleName = ? AND owner = ?;",params)
 				selectedCircleID = c.fetchone()[0]
-			add_friend_circle_form(form["user"].value, form["session"].value, selectedCircleID)
+			add_friend_to_circle_form(form["user"].value, form["session"].value, selectedCircleID)
 		elif action == "add_member_to_the_circle":
 			if "friend_name" in form:
 				username = form["friend_name"].value
-				friendCircleID = 1			
-				conn = sqlite3.connect(DATABASE)
-				with conn:
-					conn.text_factory = str
-					c = conn.cursor()
-					params = (friendCircleID, username)
-					c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",params)
-				choose_friend_circle_form(form["user"].value, form["session"].value)
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				conn.text_factory = str
+				c = conn.cursor()
+				params = (form["circleID"].value, username)
+				c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",params)
+			choose_friend_circle_form(form["user"].value, form["session"].value)
 
 
 ################################################################################################################################
-		elif action == "remove_friend_circle_form":
-			remove_friend_circle_form(form["user"].value, form["session"].value, 1)
+		elif action == "remove_friend__from_circle_form":
+			remove_friend_from_circle_form(form["user"].value, form["session"].value, 1)
 		elif action == "remove_member_from_the_circle":
 			if "remove_member" in form:
 				username = form["remove_member"].value
