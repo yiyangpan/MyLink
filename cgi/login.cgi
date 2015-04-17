@@ -491,7 +491,7 @@ def choose_friend_circle_form(user, session):
 			<INPUT TYPE=hidden NAME="action" VALUE="add_friend_to_circle_form">	
 			<INPUT type=hidden name="user" value={user}>
 			<INPUT type=hidden name="session" value={session}>
-			<br>
+			
 
 
 """
@@ -531,7 +531,7 @@ def choose_friend_circle_form(user, session):
 			<INPUT TYPE=hidden NAME="action" VALUE="remove_friend_from_circle_form">	
 			<INPUT type=hidden name="user" value={user}>
 			<INPUT type=hidden name="session" value={session}>
-			<br>
+			
 
 
 """
@@ -597,7 +597,7 @@ def add_friend_to_circle_form(user, session, circleID):
 		c.execute("SELECT username FROM circleMembers WHERE friendCircleID = ? ", t )
 		data4 = c.fetchall()
 	# generate the javascript selection list
-	print(makeSelect('selectFriends',data4))
+	print(makeSelect('selectFriendsToAdd',data4))
 
 	restHTML = """
 			</td>
@@ -642,10 +642,13 @@ def remove_friend_from_circle_form(user, session, circleID):
 			</head>
 			<body background="bg.jpg">
 			<center><H2 style="text-align: center; color:white">Remove friends from the circle</H2></center>
-			<table align="center">
-			<tr>
-			<td style="text-align: center; color:white">List of Friends in the circle</td>
-			<td align="left">
+
+			<FORM METHOD=post ACTION="login.cgi">
+				<table align="center">
+				<td style="color:white">List of Friends in the circle</td>
+				<tr>
+					<td align="center">
+
 		"""
 	print_html_content_type()
 	print(html.format(user=user,session=session))
@@ -658,42 +661,23 @@ def remove_friend_from_circle_form(user, session, circleID):
 		c.execute("SELECT username FROM circleMembers WHERE friendCircleID = ? ", t )
 		data5 = c.fetchall()	
 	# generate the javascript selection list
-	print(makeSelect('selectFriends',data5))
+	print(makeSelect('selectFriendsToRemove',data5))
 
 	restHTML = """
-			</td>
-			</tr>
-			<td align="center">                        
-				<!--<input name="btnRemoveItem" type="button" id="btnRemoveItem" value="Remove Friend" onClick="javaScript:removeListItem();" /></td>-->
-				
-				<script>
-						var selector = document.getElementById('selectFriends');
-						var selectedOption = selector[selector.selectedIndex].value;
-						<!--document.getElementById("output").innerHTML = selectedOption;-->
-						<!-- create a hidden input to store the selected Friend Circle -->
-						var input = document.createElement("input");
-						input.setAttribute("type", "hidden");
-						input.setAttribute("name", "selectedMember");
-						input.setAttribute("value", selectedOption);
-						//append to form element circleMemberForm
-						document.getElementById("removeCircleMemberForm").appendChild(input);
-				</script>
-			</td>
-			</table>
-			<br><br>
-			<TABLE align=center>
-			<FORM METHOD=post ACTION="login.cgi">
-			<TR><TH style="text-align: center; color:white">Type friend email to remove</TH><TD><INPUT TYPE="text" NAME="remove_member"></TD></TR>
-			</TABLE>
-				<div style="text-align: center" id="removeCircleMemberForm">
-					<INPUT TYPE=hidden NAME="action" VALUE="remove_member_from_the_circle">	
-					<INPUT type=hidden name="user" value={user}>
-					<INPUT type=hidden name="session" value={session}>
-					<INPUT type=hidden name="circleID" value={circleID}>
-					<br><br>
-					<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Remove Friend">
-				</div>
-				<br><br>
+
+
+						<div style="text-align: center" id="removeCircleMemberForm">
+							<INPUT TYPE=hidden NAME="action" VALUE="remove_member_from_the_circle">	
+							<INPUT type=hidden name="user" value={user}>
+							<INPUT type=hidden name="session" value={session}>
+							<INPUT type=hidden name="circleID" value={circleID}>
+							<br><br>
+							<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Remove Friend">
+						</div>
+						<br><br>
+						</td>
+					</tr>
+				</table>
 			</FORM>
 			</body>
 			</HTML>
@@ -1042,13 +1026,18 @@ def main():
 				selectedCircleID = c.fetchone()[0]
 			remove_friend_from_circle_form(form["user"].value, form["session"].value, selectedCircleID)
 		elif action == "remove_member_from_the_circle":
-			if "remove_member" in form:
-				username = form["remove_member"].value
+			print "Content-type: text/html\n\n";
+			print form.getvalue('selectFriendsToRemove')
+			if form.getvalue('selectFriendsToRemove'):
+			   username = str(form.getvalue('selectFriendsToRemove'))
+			else:
+			   username = "Not entered"
+			   #login_form()
 			conn = sqlite3.connect(DATABASE)
 			with conn:
 				conn.text_factory = str
 				c = conn.cursor()
-				params = (form["circleID"].value, username)
+				params = (form["circleID"].value, username.replace("(u'", "").replace("',)", ""))
 				c.execute("DELETE FROM circleMembers WHERE friendCircleID = ? AND username = ?;",params)
 			choose_friend_circle_form(form["user"].value, form["session"].value)
 
