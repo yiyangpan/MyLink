@@ -14,7 +14,7 @@ from email.mime.multipart import MIMEMultipart
 # Import the email modules we'll need
 
 #Get Databasedir
-MYLOGIN="xiao67"
+MYLOGIN="pan41"
 DATABASE="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/picture_share.db"
 IMAGEPATH="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/images"
 
@@ -55,16 +55,12 @@ def login_form():
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="">
         <meta name="author" content="">
-
 	<title>MyLink</title>
-
 	<!-- Bootstrap core CSS -->
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 	<!-- Custom styles for this template -->
 	<link href="signin.css" rel="stylesheet">
 	</head>
-
 	<body background="bg.jpg">
 	<div class="container">
 	<form method=post action="login.cgi" class="form-signin" role="form">	
@@ -79,9 +75,7 @@ def login_form():
 	<input type="hidden" name="action" value="login">
 	<a href="login.cgi?action=signup" class="btn btn-link btn-lg btn-block" role="button" style="color:white">Register</a>
 	</form>
-
 	</div> <!-- /container -->
-
 	<!-- Bootstrap core JavaScript ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	
@@ -101,17 +95,12 @@ def signup_form(form):
 <TITLE>Info Form</TITLE>
 <!-- Bootstrap core CSS -->
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <!-- Custom styles for this template -->
 <link href="signup.css" rel="stylesheet">
 </HEAD>
-
 <BODY background="bg.jpg" style="text-align: center">
-
 <center><H2 style="text-align: center; color:white">Register</H2></center>
-
 <H3 style="text-align: center; color:white">Type User and Password:</H3>
-
 <TABLE align=center >
 <FORM METHOD=post ACTION="login.cgi" style="text-align: center">
 <TR ><TH style="text-align: center; color:white">First name:</TH><TD><INPUT TYPE=text NAME="first_name" required></TD><TR>
@@ -119,14 +108,12 @@ def signup_form(form):
 <TR ><TH style="text-align: center; color:white">Email:</TH><TD><INPUT TYPE=text NAME="email" requiredfocus></TD><TR>
 <TR ><TH style="text-align: center; color:white">Password:</TH><TD><INPUT TYPE=password NAME="password" required></TD></TR>
 </TABLE>
-
 <INPUT TYPE=hidden NAME="action" VALUE="add_user" style="text-align: center">	
 <input type=hidden name="user" value={user} style="text-align: center">
 <input type=hidden name="session" value={session} style="text-align: center">
 <br>
 <INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Register" >
 </FORM>
-
 </BODY>
 </HTML>
 """
@@ -144,8 +131,6 @@ def verification_form(form):
 	<INPUT TYPE=hidden NAME="action" VALUE="verify" style="text-align: center">	
 <input type=hidden name="user" value={user} style="text-align: center">
 <input type=hidden name="session" value={session} style="text-align: center">
-
-
 	<INPUT class="btn btn-sm btn-primary" TYPE=submit VALUE="Verify">
 	</FORM>
 	'''
@@ -166,11 +151,10 @@ def display_admin_options(user, session):
 	<head color>
 	<title>MyLink: Feed</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="refresh" content="8;url=login.cgi?action=show_feed&user={user}&session={session}">
+	<meta  content="8;url=login.cgi?action=show_feed&user={user}&session={session}">                <!-- if want auto refresh add http-equiv="refresh" -->
 	<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
     </head>
-
 	<body background="bg.jpg">
 	<header class="navbar navbar-default navbar-static-top">
   <div class="container">
@@ -204,7 +188,22 @@ def display_admin_options(user, session):
             <div class="panel-body">
               <div class="col-md-12">
 		 <h5 style-"opacity: 70%">New Post</h5>
-		 <form method=post action="login.cgi">
+		<form METHOD=post ACTION="login.cgi">
+	"""
+	print_html_content_type()
+	print(html.format(user=user,session=session))
+
+	# get the list of friend circles from the database
+	conn = sqlite3.connect(DATABASE)
+	t = (user,)
+	with conn:
+		c = conn.cursor()
+		c.execute("SELECT friendCircleName FROM friendCircles where owner=? ",t)
+		listData = c.fetchall()
+		MyList = [i[0] for i in listData]
+	print (makeCheckbox(MyList))
+	nextHTML = """
+
                     <textarea class="form-control" required name="message" rows="3" placeholder="What's on your mind?"></textarea>
 		    <input type=hidden name="action" value="twitt">
 		    <input type=hidden name="user" value={user}>
@@ -243,9 +242,6 @@ def display_admin_options(user, session):
             </div>
 	 </div>
 
-
-	<!--   old code for PeteTwitt
-
 			<FORM METHOD=post ACTION="login.cgi">
 		   	<H4> reply to post id: </H4>
 			<INPUT TYPE=text name="id">
@@ -256,7 +252,6 @@ def display_admin_options(user, session):
 			<input type=hidden name="session" value={session}>
 			<INPUT TYPE=submit VALUE="Reply">
 			</FORM>
-
 			<FORM METHOD=post ACTION="login.cgi">
 		   	<H4> retweet to post id: </H4>
 			<INPUT TYPE=text name="message">
@@ -265,18 +260,6 @@ def display_admin_options(user, session):
 			<input type=hidden name="session" value={session}>
 			<INPUT TYPE=submit VALUE="retweet">
 			</FORM>
-	-->
-
-		<FORM METHOD=post ACTION="login.cgi">
-	   	<H4> post to following group(not finished, twitts need a new attribute for group display): </H4>
-		<INPUT TYPE=text name="id">
-		<H4> content: </H4>
-		<INPUT TYPE=text name="message">
-		<INPUT TYPE=hidden NAME="action" VALUE="reply">
-		<input type=hidden name="user" value={user}>
-		<input type=hidden name="session" value={session}>
-		<INPUT TYPE=submit VALUE="Reply">
-		</FORM>
 
 	</div>
 	<div class = "col-md-8">
@@ -297,8 +280,8 @@ def display_admin_options(user, session):
 		#cgi can check that the user has been authenticated
 
 
-	print_html_content_type()
-	print(html.format(user=user,session=session))
+
+	print(nextHTML.format(user=user,session=session))
 	conn = sqlite3.connect(DATABASE)
 	t = (user,)
 	with conn:
@@ -337,9 +320,8 @@ def display_admin_options(user, session):
 	{
 	//    $('#content').load('login.cgi?action=show_feed&user={user}&session={session}');
 	}
-
 	// Execute every 60 seconds
-	window.setInterval(refreshData, 600000000);*/
+	window.setInterval(refreshData, 6000000);*/
 	</script>
 	</html>
 	"""
@@ -354,18 +336,13 @@ def change_password_form(user, session):
 <TITLE>Info Form</TITLE>
 	<!-- Bootstrap core CSS -->
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </HEAD>
-
 <BODY background="bg.jpg">
-
 <center><H2 style="text-align: center; color:white">Change the password</H2></center>
-
 <TABLE align=center>
 <FORM METHOD=post ACTION="login.cgi">
 <TR><TH style="text-align: center; color:white">New Password:</TH><TD ><INPUT TYPE=password NAME="password"></TD></TR>
 </TABLE>
-
 <INPUT TYPE=hidden NAME="action" VALUE="change_password">	
 <input type=hidden name="user" value={user}>
 <input type=hidden name="session" value={session}>
@@ -374,7 +351,6 @@ def change_password_form(user, session):
 	<INPUT style="text-align: center" class="btn btn-lg btn-primary" TYPE=submit VALUE="Submit">
 </div>
 </FORM>
-
 </BODY>
 </HTML>
 """
@@ -391,17 +367,12 @@ def delete_account_form(user, session):
 <TITLE>Info Form</TITLE>
 	<!-- Bootstrap core CSS -->
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </HEAD>
-
 <BODY background="bg.jpg">
-
 <center><H2 style="text-align: center; color:RED">!!! Account can not be restored once deleted</H2></center>
-
 <TABLE align=center>
 <FORM METHOD=post ACTION="login.cgi">
 </TABLE>
-
 <INPUT TYPE=hidden NAME="action" VALUE="delete_account">	
 <input type=hidden name="user" value={user}>
 <input type=hidden name="session" value={session}>
@@ -410,7 +381,6 @@ def delete_account_form(user, session):
 	<INPUT style="text-align: center" class="btn btn-lg btn-primary" TYPE=submit VALUE="Delete">
 </div>
 </FORM>
-
 </BODY>
 </HTML>
 """
@@ -433,11 +403,9 @@ def upload(form):
 			<TITLE>Upload Avatar</TITLE>
 			<!-- Bootstrap core CSS -->
     		<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 			<!-- Custom styles for this template -->
 			<link href="upload.css" rel="stylesheet">
 		</HEAD>
-
 		<BODY background="bg.jpg">
 		<FORM ACTION="login.cgi" METHOD="POST" enctype="multipart/form-data">
 			<input type="hidden" name="user" value="{user}">
@@ -477,16 +445,12 @@ def search_last_name_form(form):
 <!-- Bootstrap core CSS -->
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 </HEAD>
-
 <BODY background="bg.jpg">
-
 <center><H2 style="text-align: center; color:white">Find friends on MyLink</H2></center>
-
 <TABLE BORDER = 0>
 <FORM METHOD=post ACTION="login.cgi">
 <TR><TH style="text-align: center; color:white">Last name:</TH><TD><INPUT TYPE="text" NAME="message"></TD></TR>
 </TABLE>
-
 <INPUT TYPE=hidden NAME="action" VALUE="search_last_name">	
 <input type=hidden name="user" value={user}>
 <input type=hidden name="session" value={session}>
@@ -504,22 +468,16 @@ def search_last_name_form(form):
 ###################################################################
 
 def choose_friend_circle_form(user, session):
-
 	html="""
 		<HTML>
 <HEAD>
 <TITLE>Info Form</TITLE>
-
 <!-- Bootstrap core CSS -->
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="myscripts.js"></script>
-
 </HEAD>
-
 <BODY background="bg.jpg">
-
 <center><H2 style="text-align: center; color:white">Choose or Create a Friend Circle</H2></center>
-
 <TABLE align=center>
 <FORM METHOD=post ACTION="login.cgi">
 <TR><TH style="text-align: center; color:white">TO create a new circle</TH><TD><INPUT TYPE="text" NAME="new_friend_circle"></TD></TR>
@@ -531,16 +489,22 @@ def choose_friend_circle_form(user, session):
 		<br>
 		<INPUT class="btn btn-lg btn-primary"  TYPE=submit VALUE="Create new Circle">
 	</div>
-	<br><br>
-
 </FORM>
-<table align="center">
-	<tr>
-		<td style="color:white">Choose an existing friend circle to manage members</td>
+	<br><br><br>
 
-		<td align="left">
+	<FORM METHOD=post ACTION="login.cgi">
+		<table align="center">
+			<td style="color:white">Choose an existing friend circle to add members</td>
+			<tr>
+				<td align="center">
+
+			<INPUT TYPE=hidden NAME="action" VALUE="add_friend_to_circle_form">	
+			<INPUT type=hidden name="user" value={user}>
+			<INPUT type=hidden name="session" value={session}>
+			
+
+
 """
-
 
 	print_html_content_type()
 	print(html.format(user=user,session=session))
@@ -554,43 +518,67 @@ def choose_friend_circle_form(user, session):
 		data3 = c.fetchall()
 	# generate the javascript selection list
 
-	print(makeSelect('selectCircle',data3))
+	print(makeSelect('selectCircleDropdown',data3))
+	nextHTML = """
+				<br><br>
+
+					<input type="submit" style="text-align: center; color:white"  class="btn btn-lg btn-primary" value = "Add member" href="login.cgi?action=add_friend_to_circle_form&user={user}&session={session}"></a>
+
+
+			</td>
+		</tr>
+		<br>
+		</table>
+	</FORM>
+
+<br><br><br>
+	<FORM METHOD=post ACTION="login.cgi">
+		<table align="center">
+			<td style="color:white">Choose an existing friend circle to remove members</td>
+			<tr>
+				<td align="center">
+
+			<INPUT TYPE=hidden NAME="action" VALUE="remove_friend_from_circle_form">	
+			<INPUT type=hidden name="user" value={user}>
+			<INPUT type=hidden name="session" value={session}>
+			
+
+
+"""
+
+	print(nextHTML.format(user=user,session=session))
+
+	# get the list of friend circles from the database
+	conn = sqlite3.connect(DATABASE)
+	t = (user,)
+	with conn:
+		c = conn.cursor()
+		c.execute("SELECT friendCircleName FROM friendCircles where owner=? ",t)
+		data3 = c.fetchall()
+	# generate the javascript selection list
+
+	print(makeSelect('selectCircleDropdown',data3))
 	restHTML = """
+				<br><br>
 
-		</td>
-	</tr>
-	<br>
-	</table>
-	<br>
-		<div style="text-align: center">
-					{user}
-			<a style="text-align: center; color:white"  class="btn btn-lg btn-primary" href="login.cgi?action=add_friend_circle_form&user={user}&session={session}">Add</a>
-			<a style="text-align: center; color:white"  class="btn btn-lg btn-primary" href="login.cgi?action=remove_friend_circle_form&user={user}&session={session}">Remove</a>
-		</div>
-	<br>
-	<p id="output"></p>
-	<script>
-			var selector = document.getElementById('selectCircle');
-    		var selectedOption = selector[selector.selectedIndex].value;
-			<!--document.getElementById("output").innerHTML = selectedOption;-->
+					<input type="submit" style="text-align: center; color:white"  class="btn btn-lg btn-primary" value = "Remove member" href="login.cgi?action=remove_friend_from_circle_form&user={user}&session={session}"></a>
 
-			<!-- create a hidden input to store the selected Friend Circle -->
-			var input = document.createElement("input");
-			input.setAttribute("type", "hidden");
-			input.setAttribute("name", "selectedCircle");
-			input.setAttribute("value", selectedOption);
-			//append to form element friendCircleForm
-			document.getElementById("friendCircleForm").appendChild(input);
-	</script>
+
+			</td>
+		</tr>
+		<br>
+		</table>
+	</FORM>
+
 	</BODY>
 	</HTML>
 			"""
 
-	print restHTML.format(user=user,session=session)
+	print (restHTML.format(user=user,session=session))
 
 ###################################################################
 
-def add_friend_circle_form(user, session, circleID):
+def add_friend_to_circle_form(user, session, circleID):
 
 	html="""
 		<HTML>
@@ -598,11 +586,9 @@ def add_friend_circle_form(user, session, circleID):
 			<head>
 			<!-- Bootstrap core CSS -->
 				<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
 			<title>Add Option Items </title>
 			<script src="myscripts.js"></script>
 			</head>
-
 			<body background="bg.jpg">
 			<center><H2 style="text-align: center; color:white">Add friends to the circle</H2></center>
 			<table align="center">
@@ -621,16 +607,13 @@ def add_friend_circle_form(user, session, circleID):
 		c.execute("SELECT username FROM circleMembers WHERE friendCircleID = ? ", t )
 		data4 = c.fetchall()
 	# generate the javascript selection list
-	print(makeSelect('selectFriends',data4))
+	print(makeSelect('selectFriendsToAdd',data4))
 
 	restHTML = """
 			</td>
 			</tr>
-
 			</td>
 			</table>
-
-
 			<br><br>
 			<TABLE align=center>
 			<FORM METHOD=post ACTION="login.cgi">
@@ -640,24 +623,22 @@ def add_friend_circle_form(user, session, circleID):
 					<INPUT TYPE=hidden NAME="action" VALUE="add_member_to_the_circle">	
 					<INPUT type=hidden name="user" value={user}>
 					<INPUT type=hidden name="session" value={session}>
+					<INPUT type=hidden name="circleID" value={circleID}>
 					<br>
 					<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Add Friend">
 				</div>
 				<br><br>
-
 			</FORM>
-
-
 			</body>
 			</HTML>
 		"""
 
-	print(restHTML)
+	print(restHTML.format(user=user,session=session, circleID= circleID))
 
 #################################################################
 
 
-def remove_friend_circle_form(user, session, circleID):
+def remove_friend_from_circle_form(user, session, circleID):
 
 	html="""
 		<HTML>
@@ -669,13 +650,15 @@ def remove_friend_circle_form(user, session, circleID):
 			<title>Add Option Items </title>
 			<script src="myscripts.js"></script>
 			</head>
-
 			<body background="bg.jpg">
 			<center><H2 style="text-align: center; color:white">Remove friends from the circle</H2></center>
-			<table align="center">
-			<tr>
-			<td style="text-align: center; color:white">List of Friends in the circle</td>
-			<td align="left">
+
+			<FORM METHOD=post ACTION="login.cgi">
+				<table align="center">
+				<td style="color:white">List of Friends in the circle</td>
+				<tr>
+					<td align="center">
+
 		"""
 	print_html_content_type()
 	print(html.format(user=user,session=session))
@@ -688,52 +671,29 @@ def remove_friend_circle_form(user, session, circleID):
 		c.execute("SELECT username FROM circleMembers WHERE friendCircleID = ? ", t )
 		data5 = c.fetchall()	
 	# generate the javascript selection list
-	print(makeSelect('selectFriends',data5))
+	print(makeSelect('selectFriendsToRemove',data5))
 
 	restHTML = """
-			</td>
-			</tr>
-
-			<td align="center">                        
-				<!--<input name="btnRemoveItem" type="button" id="btnRemoveItem" value="Remove Friend" onClick="javaScript:removeListItem();" /></td>-->
-				
-				<script>
-						var selector = document.getElementById('selectFriends');
-						var selectedOption = selector[selector.selectedIndex].value;
-						<!--document.getElementById("output").innerHTML = selectedOption;-->
-
-						<!-- create a hidden input to store the selected Friend Circle -->
-						var input = document.createElement("input");
-						input.setAttribute("type", "hidden");
-						input.setAttribute("name", "selectedMember");
-						input.setAttribute("value", selectedOption);
-						//append to form element circleMemberForm
-						document.getElementById("removeCircleMemberForm").appendChild(input);
-				</script>
-			</td>
-			</table>
 
 
-			<br><br>
-			<TABLE align=center>
-			<FORM METHOD=post ACTION="login.cgi">
-			<TR><TH style="text-align: center; color:white">Type friend email to remove</TH><TD><INPUT TYPE="text" NAME="remove_member"></TD></TR>
-			</TABLE>
-				<div style="text-align: center" id="removeCircleMemberForm">
-					<INPUT TYPE=hidden NAME="action" VALUE="remove_member_from_the_circle">	
-					<INPUT type=hidden name="user" value={user}>
-					<INPUT type=hidden name="session" value={session}>
-					<br><br>
-					<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Remove Friend">
-				</div>
-				<br><br>
-
+						<div style="text-align: center" id="removeCircleMemberForm">
+							<INPUT TYPE=hidden NAME="action" VALUE="remove_member_from_the_circle">	
+							<INPUT type=hidden name="user" value={user}>
+							<INPUT type=hidden name="session" value={session}>
+							<INPUT type=hidden name="circleID" value={circleID}>
+							<br><br>
+							<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Remove Friend">
+						</div>
+						<br><br>
+						</td>
+					</tr>
+				</table>
 			</FORM>
 			</body>
 			</HTML>
 		"""
 
-	print(restHTML)
+	print(restHTML.format(user=user,session=session, circleID= circleID))
 
 #################################################################
 def makeSelect(name,values):
@@ -742,6 +702,13 @@ def makeSelect(name,values):
     return SEL.format(name, ''.join(OPT.format(v) for v in values))
 
 
+
+#################################################################
+def makeCheckbox(values):
+	rest = ""
+	for v in values:
+		rest = rest + '<INPUT type="checkbox" value="'+ v + '" name="checkbox" id="' + v + '" />' + v+'\n'
+	return rest
 
 ###################################################################
 # Define function to test the password.
@@ -971,15 +938,20 @@ def main():
 
 ################################################################################################################################
 		elif action == "twitt":
-			if "message" in form:		
+			if "message" in form:
+				checkboxes = form.getlist('checkbox')
 				msg = form["message"].value
 				if (validate_tweet(msg)!=0):
 					now = time.strftime('%Y-%m-%d %H:%M:%S')
 					conn = sqlite3.connect(DATABASE)
 					with conn:
 						c = conn.cursor()
-						t = (now,msg,form["user"].value,0)
-						c.execute("INSERT INTO twitts(time,msg,owner,parent) VALUES (?,?,?,?)",t)
+						for selectedCircleName in checkboxes:
+							params = (selectedCircleName.replace("(u'", "").replace("',)", ""), form["user"].value)
+							c.execute("SELECT friendCircleID FROM friendCircles WHERE friendCircleName = ? AND owner = ?;",params)
+							selectedCircleID = c.fetchone()[0]
+							t = (now,msg,form["user"].value,0,selectedCircleID)
+							c.execute("INSERT INTO twitts(time,msg,owner,parent,friendCircleID) VALUES (?,?,?,?,?)",t)
 					display_admin_options(form["user"].value, form["session"].value)
 				else:
 					display_admin_options(form["user"].value, form["session"].value)
@@ -1031,33 +1003,65 @@ def main():
 				choose_friend_circle_form(form["user"].value, form["session"].value)
 
 ################################################################################################################################
-		elif action == "add_friend_circle_form":
-			add_friend_circle_form(form["user"].value, form["session"].value, 1) #    , form["selectedCircle"].value)
+
+		elif action == "add_friend_to_circle_form":
+			#print "Content-type: text/html\n\n";
+			#print (form.getvalue('selectCircleDropdown'))
+			#print (form['user'].value)
+			# Get data from fields
+			if form.getvalue('selectCircleDropdown'):
+			   selectedCircleName = str(form.getvalue('selectCircleDropdown'))
+			else:
+			   selectedCircleName = "Not entered"
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				conn.text_factory = str
+				c = conn.cursor()
+				params = (selectedCircleName.replace("(u'", "").replace("',)", ""), form["user"].value)
+				c.execute("SELECT friendCircleID FROM friendCircles WHERE friendCircleName = ? AND owner = ?;",params)
+				selectedCircleID = c.fetchone()[0]
+			add_friend_to_circle_form(form["user"].value, form["session"].value, selectedCircleID)
 		elif action == "add_member_to_the_circle":
 			if "friend_name" in form:
 				username = form["friend_name"].value
-				friendCircleID = 1			
-				conn = sqlite3.connect(DATABASE)
-				with conn:
-					conn.text_factory = str
-					c = conn.cursor()
-					params = (friendCircleID, username)
-					c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",params)
-				choose_friend_circle_form(form["user"].value, form["session"].value)
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				conn.text_factory = str
+				c = conn.cursor()
+				params = (form["circleID"].value, username)
+				c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",params)
+			choose_friend_circle_form(form["user"].value, form["session"].value)
+
+
 ################################################################################################################################
-		elif action == "remove_friend_circle_form":
-			remove_friend_circle_form(form["user"].value, form["session"].value, 1)
+		elif action == "remove_friend_from_circle_form":
+			if form.getvalue('selectCircleDropdown'):
+			   selectedCircleName = str(form.getvalue('selectCircleDropdown'))
+			else:
+			   selectedCircleName = "Not entered"
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				conn.text_factory = str
+				c = conn.cursor()
+				params = (selectedCircleName.replace("(u'", "").replace("',)", ""), form["user"].value)
+				c.execute("SELECT friendCircleID FROM friendCircles WHERE friendCircleName = ? AND owner = ?;",params)
+				selectedCircleID = c.fetchone()[0]
+			remove_friend_from_circle_form(form["user"].value, form["session"].value, selectedCircleID)
 		elif action == "remove_member_from_the_circle":
-			if "remove_member" in form:
-				username = form["remove_member"].value
-				friendCircleID = 1			
-				conn = sqlite3.connect(DATABASE)
-				with conn:
-					conn.text_factory = str
-					c = conn.cursor()
-					params = (friendCircleID, username)
-					c.execute("DELETE FROM circleMembers WHERE friendCircleID = ? AND username = ?;",params)
-				choose_friend_circle_form(form["user"].value, form["session"].value)
+			print "Content-type: text/html\n\n";
+			print form.getvalue('selectFriendsToRemove')
+			if form.getvalue('selectFriendsToRemove'):
+			   username = str(form.getvalue('selectFriendsToRemove'))
+			else:
+			   username = "Not entered"
+			   #login_form()
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				conn.text_factory = str
+				c = conn.cursor()
+				params = (form["circleID"].value, username.replace("(u'", "").replace("',)", ""))
+				c.execute("DELETE FROM circleMembers WHERE friendCircleID = ? AND username = ?;",params)
+			choose_friend_circle_form(form["user"].value, form["session"].value)
 
 
 ################################################################################################################################

@@ -19,13 +19,11 @@ c.execute('''CREATE TABLE users
 c.execute('''CREATE TABLE verify
 	     (	      
 	      email TEXT NOT NULL, 
-		first_name TEXT NOT NULL, 
+		  first_name TEXT NOT NULL, 
 	      last_name TEXT NOT NULL,
 	      password TEXT NOT NULL,
 	      code TEXT NOT NULL
 		) ''')
-
-
 
 # Create twitts table
 c.execute('''CREATE TABLE twitts
@@ -35,6 +33,7 @@ c.execute('''CREATE TABLE twitts
 	      owner TEXT NOT NULL,
 	      id INTEGER PRIMARY KEY AUTOINCREMENT,
 	      parent INT NOT NULL,
+		  friendCircleID INT NOT NULL,
 	      FOREIGN KEY(owner) REFERENCES users(email)
 	      )''')
 
