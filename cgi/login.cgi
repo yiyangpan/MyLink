@@ -154,49 +154,56 @@ def display_admin_options(user, session):
 		query = "SELECT * FROM twitts WHERE friendCircleID IN (%s) ORDER BY time DESC" % placeholders
 		c.execute(query, friendCirclesString)
 		data = c.fetchall()	
+
+	# store the user and session to the cookie
+	print "Set-Cookie:user={user};"
+	print "Set-Cookie:session={session};"
+	print "Content-type:text/html"
+
 	html="""
-	<head color>
-	<title>MyLink: Feed</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta  content="8;url=login.cgi?action=show_feed&user={user}&session={session}">                <!-- if want auto refresh add http-equiv="refresh" -->
-	<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-	<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
-    </head>
-	<body background="bg.jpg">
-	<header class="navbar navbar-default navbar-static-top">
-  <div class="container">
-    <nav class="" role="navigation">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#"><strong>MyLink</strong></a>
-      </div>
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav navbar-right">
-          <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-					  <li><a href="login.cgi?action=user_info_form&user={user}&session={session}">Chaneg User Info</a></li>
-		              <li><a href="login.cgi?action=change_password_form&user={user}&session={session}">Change Password</a></li>
-		              <li><a href="login.cgi?action=upload&user={user}&session={session}">Upload Avatar</a></li>
-			 		  <li><a href="login.cgi?action=show_feed&user={user}&session={session}">Refresh</a></li>
-					  <li><a  style="color:red" href="login.cgi?action=delete_account_form&user={user}&session={session}">Delete Account</a></li>
-		              <li class="divider"></li>
-		              <li><a href="login.cgi?action=return_login&user={user}&session={session}">Log out</a></li>
-                </ul>
-          </li>
-        </ul>
-      </div> <!-- /.navbar-collapse -->
-    </nav>
-  </div>
-</header>
-<div class="container">
-   <div class="row">
-	<div class = "col-md-4">
-	  <div class="panel panel-default">
-            <div class="panel-body">
-              <div class="col-md-12">
-		 <h5 style-"opacity: 70%">New Post</h5>
-		<form METHOD=post ACTION="login.cgi">
+	<html>
+		<head color>
+		<title>MyLink: Feed</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta  content="8;url=login.cgi?action=show_feed&user={user}&session={session}">                <!-- if want auto refresh add http-equiv="refresh" -->
+			<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+			<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+		</head>
+		<body background="bg.jpg">
+		<header class="navbar navbar-default navbar-static-top">
+	  <div class="container">
+		<nav class="" role="navigation">
+		  <!-- Brand and toggle get grouped for better mobile display -->
+		  <div class="navbar-header">
+		    <a class="navbar-brand" href="#"><strong>MyLink</strong></a>
+		  </div>
+		  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		    <ul class="nav navbar-nav navbar-right">
+		      <li class="dropdown">
+		            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
+		            <ul class="dropdown-menu">
+						  <li><a href="login.cgi?action=user_info_form&user={user}&session={session}">Chaneg User Info</a></li>
+				          <li><a href="login.cgi?action=change_password_form&user={user}&session={session}">Change Password</a></li>
+				          <li><a href="login.cgi?action=upload&user={user}&session={session}">Upload Avatar</a></li>
+				 		  <li><a href="login.cgi?action=show_feed&user={user}&session={session}">Refresh</a></li>
+						  <li><a  style="color:red" href="login.cgi?action=delete_account_form&user={user}&session={session}">Delete Account</a></li>
+				          <li class="divider"></li>
+				          <li><a href="login.cgi?action=return_login&user={user}&session={session}">Log out</a></li>
+		            </ul>
+		      </li>
+		    </ul>
+		  </div> <!-- /.navbar-collapse -->
+		</nav>
+	  </div>
+	</header>
+	<div class="container">
+	   <div class="row">
+		<div class = "col-md-4">
+		  <div class="panel panel-default">
+		        <div class="panel-body">
+		          <div class="col-md-12">
+			 <h5 style-"opacity: 70%">New Post</h5>
+			<form METHOD=post ACTION="login.cgi">
 	"""
 	print_html_content_type()
 	print(html.format(user=user,session=session))
@@ -499,7 +506,7 @@ def search_last_name_form(form):
 <INPUT TYPE=submit VALUE="Submit">
 </FORM>
 <br>
-<a href="login.cgi?action=return&user={user}&session={session}">Finish stalking</a>
+<a href="login.cgi?action=return&user={user}&session={session}">Return</a>
 </BODY>
 </HTML>
 		"""
