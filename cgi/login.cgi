@@ -1102,7 +1102,7 @@ def main():
 			# Trying to retrieving data in the cookie
 			if environ.has_key('HTTP_COOKIE'):
 			   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
-				  (key, value ) = split(cookie, '=');
+				  (key, value) = split(cookie, '=');
 				  if key == "user":
 					 user = value
 
