@@ -145,7 +145,14 @@ def display_admin_options(user, session):
 	conn = sqlite3.connect(DATABASE)
 	with conn:
 		c = conn.cursor()
-		c.execute("SELECT * FROM twitts ORDER BY time DESC")
+		t = (user, )
+		c.execute("SELECT friendCircleID FROM circleMembers WHERE username = ?", t)
+		friendCircles = c.fetchall()
+		friendCirclesString =[i[0] for i in friendCircles]
+		placeholder= '?' # For SQLite. See DBAPI paramstyle.
+		placeholders= ', '.join(placeholder for unused in friendCirclesString)
+		query = "SELECT * FROM twitts WHERE friendCircleID IN (%s) ORDER BY time DESC" % placeholders
+		c.execute(query, friendCirclesString)
 		data = c.fetchall()	
 	html="""
 	<head color>
@@ -269,6 +276,7 @@ def display_admin_options(user, session):
 		<div class="panel-body">
 			<div class="col-md-12">
 		<ul>
+		<H4>Welcome {user}</H4>
 		<li> <a href="login.cgi?action=search_last_name_form&user={user}&session={session}">Search Users</a>
 		<li> <a href="login.cgi?action=choose_friend_circle_form&user={user}&session={session}">Manage Friend Circle</a>
 		</ul>
@@ -991,6 +999,7 @@ def main():
 			display_admin_options(form["user"].value, form["session"].value)
 
 ################################################################################################################################
+# add a friend
 		elif action == "subscribe":
 			if "message" in form:		
 				target = form["message"].value
@@ -1004,6 +1013,7 @@ def main():
 				display_admin_options(form["user"].value, form["session"].value)
 
 ################################################################################################################################
+# remove a friend
 		elif action == "unfriend":
 			if "message" in form:		
 				target = form["message"].value
@@ -1069,6 +1079,8 @@ def main():
 ################################################################################################################################
 		elif action == "choose_friend_circle_form":
 			choose_friend_circle_form(form["user"].value, form["session"].value)
+
+		# create a new friend circle
 		elif action == "add_friend_circle":
 			if "new_friend_circle" in form:
 				owner = form["user"].value
@@ -1080,6 +1092,11 @@ def main():
 					c = conn.cursor()
 					params = (owner, friendCircleName)
 					c.execute("INSERT INTO friendCircles (owner, friendCircleName) VALUES (?,?);",params)
+					# add owner himself to the friend circle to see own posts
+					c.execute("SELECT friendCircleID FROM friendCircles WHERE owner = ? AND friendCircleName = ?;",params)
+					selectedCircleID = c.fetchone()[0]
+					p = (selectedCircleID, owner)
+					c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",p)
 				choose_friend_circle_form(form["user"].value, form["session"].value)
 
 ################################################################################################################################
