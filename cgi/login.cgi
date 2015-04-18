@@ -185,6 +185,7 @@ def display_admin_options(user, session):
 						  <li><a href="login.cgi?action=user_info_form&user={user}&session={session}">Chaneg User Info</a></li>
 				          <li><a href="login.cgi?action=change_password_form&user={user}&session={session}">Change Password</a></li>
 				          <li><a href="login.cgi?action=upload&user={user}&session={session}">Upload Avatar</a></li>
+						  <li> <a href="login.cgi?action=choose_friend_circle_form&user={user}&session={session}">Manage Friend Circle</a>
 				 		  <li><a href="login.cgi?action=show_feed&user={user}&session={session}">Refresh</a></li>
 						  <li><a  style="color:red" href="login.cgi?action=delete_account_form&user={user}&session={session}">Delete Account</a></li>
 				          <li class="divider"></li>
@@ -220,10 +221,11 @@ def display_admin_options(user, session):
 	print (makeCheckbox(MyList))
 	nextHTML = """
 
-                    <textarea class="form-control" required name="message" rows="3" placeholder="What's on your mind?"></textarea>
+            <textarea class="form-control" required name="message" rows="3" placeholder="What's on your mind?"></textarea>
 		    <input type=hidden name="action" value="twitt">
 		    <input type=hidden name="user" value={user}>
 		    <input type=hidden name="session" value={session}>
+			<INPUT style="" TYPE="FILE" NAME="file"  class="custom-file-input">
 		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Post</button> 
 		 </form>
               </div>
@@ -234,7 +236,7 @@ def display_admin_options(user, session):
               <div class="col-md-12">
 		 <h5 style-"opacity: 70%">Add Friends(subscribe)</h5>
 		 <form method=post action="login.cgi">
-                    <input type=email class="form-control" required name="message" placeholder="Username">
+            <input type=email class="form-control" required name="message" placeholder="Username">
 		    <input type=hidden name="action" value="subscribe">
 		    <input type=hidden name="user" value={user}>
 		    <input type=hidden name="session" value={session}>
@@ -258,6 +260,9 @@ def display_admin_options(user, session):
             </div>
 	 </div>
 
+
+	<!--    reply to a post
+
 			<FORM METHOD=post ACTION="login.cgi">
 		   	<H4> reply to post id: </H4>
 			<INPUT TYPE=text name="id">
@@ -277,6 +282,8 @@ def display_admin_options(user, session):
 			<INPUT TYPE=submit VALUE="retweet">
 			</FORM>
 
+	-->
+
 	</div>
 	<div class = "col-md-8">
 	<div class="panel panel-default">
@@ -285,7 +292,6 @@ def display_admin_options(user, session):
 		<ul>
 		<H4>Welcome {user}</H4>
 		<li> <a href="login.cgi?action=search_last_name_form&user={user}&session={session}">Search Users</a>
-		<li> <a href="login.cgi?action=choose_friend_circle_form&user={user}&session={session}">Manage Friend Circle</a>
 		</ul>
 		<br>
 		<h3> </h3>
@@ -1036,23 +1042,27 @@ def main():
 ################################################################################################################################
 		elif action == "twitt":
 			if "message" in form:
-				checkboxes = form.getlist('checkbox')
-				msg = form["message"].value
-				if (validate_tweet(msg)!=0):
-					now = time.strftime('%Y-%m-%d %H:%M:%S')
-					conn = sqlite3.connect(DATABASE)
-					with conn:
-						c = conn.cursor()
-						for selectedCircleName in checkboxes:
-							params = (selectedCircleName.replace("(u'", "").replace("',)", ""), form["user"].value)
-							c.execute("SELECT friendCircleID FROM friendCircles WHERE friendCircleName = ? AND owner = ?;",params)
-							selectedCircleID = c.fetchone()[0]
-							t = (now,msg,form["user"].value,0,selectedCircleID)
-							c.execute("INSERT INTO twitts(time,msg,owner,parent,friendCircleID) VALUES (?,?,?,?,?)",t)
+				if form.getvalue('checkbox'):
+					checkboxes = form.getlist('checkbox')
+					msg = form["message"].value
+					if (validate_tweet(msg)!=0):
+						now = time.strftime('%Y-%m-%d %H:%M:%S')
+						conn = sqlite3.connect(DATABASE)
+						with conn:
+							c = conn.cursor()
+							for selectedCircleName in checkboxes:
+								params = (selectedCircleName.replace("(u'", "").replace("',)", ""), form["user"].value)
+								c.execute("SELECT friendCircleID FROM friendCircles WHERE friendCircleName = ? AND owner = ?;",params)
+								selectedCircleID = c.fetchone()[0]
+								t = (now,msg,form["user"].value,0,selectedCircleID)
+								c.execute("INSERT INTO twitts(time,msg,owner,parent,friendCircleID) VALUES (?,?,?,?,?)",t)
+						display_admin_options(form["user"].value, form["session"].value)
+					else:
+						display_admin_options(form["user"].value, form["session"].value)
+						print("<H3><font color=\"red\">you are not suppose to see this</font></H3>")
+				else: 
 					display_admin_options(form["user"].value, form["session"].value)
-				else:
-					display_admin_options(form["user"].value, form["session"].value)
-					print("<H3><font color=\"red\">you are not suppose to see this</font></H3>")
+					print("<H3><font color=\"red\">Select at least 1 circle to post</font></H3>")
 
 		elif action == "retwitt":
 			if "message" in form:		

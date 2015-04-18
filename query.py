@@ -31,9 +31,9 @@ print 'Print all twitts'
 for row in c.execute('SELECT * FROM twitts'):
   print row
 
+
 print
-print "Print peter's password"
-t = ('peter@gmail.com',)
-c.execute('SELECT * FROM users WHERE email=?', t)
-print c.fetchone()[1]
+print 'Print all pictures'
+for row in c.execute('SELECT * FROM pictures'):
+  print row
 
