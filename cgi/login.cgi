@@ -168,12 +168,13 @@ def display_admin_options(user, session):
           <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="login.cgi?action=change_password_form&user={user}&session={session}">Change Password</a></li>
-                  <li><a href="login.cgi?action=upload&user={user}&session={session}">Upload Avatar</a></li>
-		 		  <li><a href="login.cgi?action=show_feed&user={user}&session={session}">Refresh</a></li>
-				  <li><a  style="color:red" href="login.cgi?action=delete_account_form&user={user}&session={session}">Delete Account</a></li>
-                  <li class="divider"></li>
-                  <li><a href="login.cgi?action=return_login&user={user}&session={session}">Log out</a></li>
+					  <li><a href="login.cgi?action=user_info_form&user={user}&session={session}">Chaneg User Info</a></li>
+		              <li><a href="login.cgi?action=change_password_form&user={user}&session={session}">Change Password</a></li>
+		              <li><a href="login.cgi?action=upload&user={user}&session={session}">Upload Avatar</a></li>
+			 		  <li><a href="login.cgi?action=show_feed&user={user}&session={session}">Refresh</a></li>
+					  <li><a  style="color:red" href="login.cgi?action=delete_account_form&user={user}&session={session}">Delete Account</a></li>
+		              <li class="divider"></li>
+		              <li><a href="login.cgi?action=return_login&user={user}&session={session}">Log out</a></li>
                 </ul>
           </li>
         </ul>
@@ -357,6 +358,38 @@ def change_password_form(user, session):
 	print_html_content_type()
 	print(html.format(user=user,session=session))
 
+
+
+###################################################
+
+def user_info_form(user, session):
+	html="""
+<HTML>
+<HEAD>
+<TITLE>Info Form</TITLE>
+	<!-- Bootstrap core CSS -->
+        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+</HEAD>
+<BODY background="bg.jpg">
+<center><H2 style="text-align: center; color:white">Change User Information</H2></center>
+<TABLE align=center>
+<FORM METHOD=post ACTION="login.cgi">
+<TR><TH style="text-align: center; color:white">New First Name:</TH><TD ><INPUT TYPE="text" NAME="newFirstName"></TD></TR>
+<TR><TH style="text-align: center; color:white">New Last Name:</TH><TD ><INPUT TYPE="text" NAME="newLastName"></TD></TR>
+</TABLE>
+<INPUT TYPE=hidden NAME="action" VALUE="change_user_info">	
+<input type=hidden name="user" value={user}>
+<input type=hidden name="session" value={session}>
+<br>
+<div style="text-align: center">
+	<INPUT style="text-align: center" class="btn btn-lg btn-primary" TYPE=submit VALUE="Submit">
+</div>
+</FORM>
+</BODY>
+</HTML>
+"""
+	print_html_content_type()
+	print(html.format(user=user,session=session))
 
 ###################################################
 
@@ -881,6 +914,8 @@ def main():
 					t = (row[0],row[0])
 					c.execute('INSERT INTO subscribe(owner,target) VALUES (?,?)', t)
 				login_form()
+
+#############################################################################
 		elif (action == "change_password_form"):
 			change_password_form(form["user"].value,form["session"].value)
 		elif (action == "change_password"):
@@ -891,6 +926,21 @@ def main():
 				owner = form["user"].value
 				params = (newpassword,owner)				
 				c.execute('UPDATE users SET password=? WHERE email=?', params)
+			login_form()
+
+
+#############################################################################
+		elif (action == "user_info_form"):
+			user_info_form(form["user"].value,form["session"].value)
+		elif (action == "change_user_info"):
+			newFirstName=form["newFirstName"].value
+			newLastName=form["newLastName"].value
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				c = conn.cursor()
+				owner = form["user"].value
+				params = (newFirstName,newLastName, owner)				
+				c.execute('UPDATE users SET first_name=?, last_name=? WHERE email=? ', params)
 			login_form()
 
 ################################################################################
