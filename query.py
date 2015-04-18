@@ -9,6 +9,12 @@ print 'Print all users'
 for row in c.execute('SELECT * FROM users'):
   print row
 
+
+print
+print 'Print all subscribe'
+for row in c.execute('SELECT * FROM subscribe'):
+  print row
+
 print
 print 'Print all friendCircles'
 for row in c.execute('SELECT * FROM friendCircles'):

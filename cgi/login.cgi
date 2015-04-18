@@ -201,6 +201,7 @@ def display_admin_options(user, session):
 		c = conn.cursor()
 		c.execute("SELECT friendCircleName FROM friendCircles where owner=? ",t)
 		listData = c.fetchall()
+		# trim the list of tuples to list of strings
 		MyList = [i[0] for i in listData]
 	print (makeCheckbox(MyList))
 	nextHTML = """
@@ -549,6 +550,7 @@ def choose_friend_circle_form(user, session):
 		c = conn.cursor()
 		c.execute("SELECT friendCircleName FROM friendCircles where owner=? ",t)
 		data3 = c.fetchall()
+		# trim the list of tuples to list of strings
 		data3List = [i[0] for i in data3]
 	# generate the javascript selection list
 
@@ -589,6 +591,7 @@ def choose_friend_circle_form(user, session):
 		c = conn.cursor()
 		c.execute("SELECT friendCircleName FROM friendCircles where owner=? ",t)
 		data3 = c.fetchall()
+		# trim the list of tuples to list of strings
 		data3List = [i[0] for i in data3]
 	# generate the javascript selection list
 
@@ -641,6 +644,7 @@ def add_friend_to_circle_form(user, session, circleID):
 		c = conn.cursor()
 		c.execute("SELECT username FROM circleMembers WHERE friendCircleID = ? ", t )
 		data4 = c.fetchall()
+		# trim the list of tuples to list of strings
 		data4List = [i[0] for i in data4]
 	# generate the javascript selection list
 	print(makeSelect('selectFriendsToAdd',data4List))
@@ -706,6 +710,7 @@ def remove_friend_from_circle_form(user, session, circleID):
 		c = conn.cursor()
 		c.execute("SELECT username FROM circleMembers WHERE friendCircleID = ? ", t )
 		data5 = c.fetchall()
+		# trim the list of tuples to list of strings
 		data5List = [i[0] for i in data5]	
 	# generate the javascript selection list
 	print(makeSelect('selectFriendsToRemove',data5List))
@@ -993,7 +998,9 @@ def main():
 				with conn:
 					c = conn.cursor()
 					t = (form["user"].value,target)
+					# add friendship both ways
 					c.execute('INSERT INTO subscribe(owner,target) VALUES (?,?)', t)
+					c.execute('INSERT INTO subscribe(target,owner) VALUES (?,?)', t)
 				display_admin_options(form["user"].value, form["session"].value)
 
 ################################################################################################################################
@@ -1004,7 +1011,9 @@ def main():
 				with conn:
 					c = conn.cursor()
 					t = (form["user"].value,target)
+					# delete friendship both ways
 					c.execute('DELETE FROM subscribe WHERE owner = ? AND target = ?', t)
+					c.execute('DELETE FROM subscribe WHERE target = ? AND owner = ?', t)
 				display_admin_options(form["user"].value, form["session"].value)
 
 ################################################################################################################################
