@@ -7,8 +7,7 @@ c = conn.cursor()
 
 print
 print 'Delete the circleMembers'
-t = ('james',)
-c.execute('DELETE FROM circleMembers WHERE username = ?;', t)
+c.execute('DELETE FROM circleMembers;')
 conn.commit()
 
 

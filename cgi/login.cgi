@@ -768,6 +768,23 @@ def check_password(user, passwd):
 	return "failed"
 	
 
+###################################################################
+def IsFriend(owner,target):
+	conn = sqlite3.connect(DATABASE)
+	c = conn.cursor()
+
+	t = (owner,target)
+	c.execute('SELECT * FROM subscribe WHERE owner=? AND target = ?', t)
+
+	row =c.fetchone()
+	conn.close();
+
+	if row != None: 
+		 return "passed"
+
+	return "failed"
+	
+
 #################################################################
 def create_new_session(user):
 	return session.create_session(user)
@@ -867,7 +884,7 @@ def main():
 					password=form["password"].value
 					if validate(username,password)==0:
 					   login_form()
-					   print("<H3><font color=\"red\">Invalid email/password (are you trying to inject our sql you bitch?)</font></H3>")
+					   print("<H3><font color=\"red\">Invalid email/password</font></H3>")
 					elif check_password(username, password)=="passed":
 					   session=create_new_session(username)
 					   display_admin_options(username, session)
@@ -1062,7 +1079,7 @@ def main():
 			#print "Content-type: text/html\n\n";
 			#print (form.getvalue('selectCircleDropdown'))
 			#print (form['user'].value)
-			# Get data from fields
+			# get the current friend circle name first
 			if form.getvalue('selectCircleDropdown'):
 			   selectedCircleName = str(form.getvalue('selectCircleDropdown'))
 			else:
@@ -1071,20 +1088,27 @@ def main():
 			with conn:
 				conn.text_factory = str
 				c = conn.cursor()
-				params = (selectedCircleName.replace("(u'", "").replace("',)", ""), form["user"].value)
+				params = (selectedCircleName, form["user"].value)
 				c.execute("SELECT friendCircleID FROM friendCircles WHERE friendCircleName = ? AND owner = ?;",params)
 				selectedCircleID = c.fetchone()[0]
 			add_friend_to_circle_form(form["user"].value, form["session"].value, selectedCircleID)
+
 		elif action == "add_member_to_the_circle":
+			# check whether this email belongs to one of the friends
 			if "friend_name" in form:
+				owner = form["user"].value
 				username = form["friend_name"].value
-			conn = sqlite3.connect(DATABASE)
-			with conn:
-				conn.text_factory = str
-				c = conn.cursor()
-				params = (form["circleID"].value, username)
-				c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",params)
-			choose_friend_circle_form(form["user"].value, form["session"].value)
+				if IsFriend(owner,username)=="failed":
+					add_friend_to_circle_form(form["user"].value, form["session"].value, form["circleID"].value)
+					print("<H3><font color=\"red\">Can't find this person in your friend list</font></H3>")
+				else:
+					conn = sqlite3.connect(DATABASE)
+					with conn:
+						conn.text_factory = str
+						c = conn.cursor()
+						params = (form["circleID"].value, username)
+						c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",params)
+					add_friend_to_circle_form(form["user"].value, form["session"].value, form["circleID"].value)
 
 
 ################################################################################################################################
@@ -1097,13 +1121,13 @@ def main():
 			with conn:
 				conn.text_factory = str
 				c = conn.cursor()
-				params = (selectedCircleName.replace("(u'", "").replace("',)", ""), form["user"].value)
+				params = (selectedCircleName, form["user"].value)
 				c.execute("SELECT friendCircleID FROM friendCircles WHERE friendCircleName = ? AND owner = ?;",params)
 				selectedCircleID = c.fetchone()[0]
 			remove_friend_from_circle_form(form["user"].value, form["session"].value, selectedCircleID)
 		elif action == "remove_member_from_the_circle":
-			print "Content-type: text/html\n\n";
-			print form.getvalue('selectFriendsToRemove')
+			#print "Content-type: text/html\n\n";
+			#print form.getvalue('selectFriendsToRemove')
 			if form.getvalue('selectFriendsToRemove'):
 			   username = str(form.getvalue('selectFriendsToRemove'))
 			else:
@@ -1113,9 +1137,9 @@ def main():
 			with conn:
 				conn.text_factory = str
 				c = conn.cursor()
-				params = (form["circleID"].value, username.replace("(u'", "").replace("',)", ""))
+				params = (form["circleID"].value, username)
 				c.execute("DELETE FROM circleMembers WHERE friendCircleID = ? AND username = ?;",params)
-			choose_friend_circle_form(form["user"].value, form["session"].value)
+			remove_friend_from_circle_form(form["user"].value, form["session"].value, form["circleID"].value)
 
 
 ################################################################################################################################
