@@ -1099,6 +1099,7 @@ def main():
 
 		elif action == "search_last_name_form":
 			search_last_name_form(form)
+			# Trying to retrieving data in the cookie
 			if environ.has_key('HTTP_COOKIE'):
 			   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
 				  (key, value ) = split(cookie, '=');
