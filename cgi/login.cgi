@@ -1,6 +1,13 @@
 #!/usr/bin/python
 
+##############################################################
+# All rights reserved to Xiao Yao and Pan Yiyang, May 2015
+##############################################################
+
 # Import the CGI, string, sys modules
+from os import environ
+from string import strip
+from string import split
 import cgi, string, sys, os, re, random
 import cgitb; cgitb.enable()  # for troubleshooting
 import sqlite3
@@ -155,7 +162,7 @@ def display_admin_options(user, session):
 		c.execute(query, friendCirclesString)
 		data = c.fetchall()	
 
-	# store the user and session to the cookie
+	# store the user and session into the cookie
 	print "Set-Cookie:user={user};"
 	print "Set-Cookie:session={session};"
 	print "Content-type:text/html"
@@ -999,6 +1006,7 @@ def main():
 				c.execute('DELETE FROM friendCircles WHERE owner = ? ', owner)
 				c.execute('DELETE FROM circleMembers WHERE username = ? ', owner)
 			login_form()
+
 ###############################################################################
 		elif (action == "new-album"):
 			new_album(form)
@@ -1091,6 +1099,17 @@ def main():
 
 		elif action == "search_last_name_form":
 			search_last_name_form(form)
+			if environ.has_key('HTTP_COOKIE'):
+			   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
+				  (key, value ) = split(cookie, '=');
+				  if key == "user":
+					 user = value
+
+				  if key == "session":
+					 session = value
+
+			print "User= %s" % user
+			print "Session = %s" % session
 
 
 ################################################################################################################################
@@ -1187,6 +1206,7 @@ def main():
 
 ################################################################################################################################
 		elif action == "search_last_name":
+
 			conn = sqlite3.connect(DATABASE)
 			msg = form["message"].value
 			if len(msg)!=0:
