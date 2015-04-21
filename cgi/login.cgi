@@ -158,7 +158,7 @@ def display_admin_options(user, session):
 		friendCirclesString =[i[0] for i in friendCircles]
 		placeholder= '?' # For SQLite. See DBAPI paramstyle.
 		placeholders= ', '.join(placeholder for unused in friendCirclesString)
-		query = "SELECT * FROM twitts WHERE friendCircleID IN (%s) ORDER BY time DESC" % placeholders
+		query = "SELECT * FROM twitts WHERE friendCircleID IN (%s) GROUP BY time ORDER BY time DESC" % placeholders
 		c.execute(query, friendCirclesString)
 		data = c.fetchall()	
 
@@ -225,6 +225,11 @@ def display_admin_options(user, session):
 		listData = c.fetchall()
 		# trim the list of tuples to list of strings
 		MyList = [i[0] for i in listData]
+		
+		# get user First name and Last Name		
+		c.execute("SELECT first_name, last_name FROM users where email=? ",t)
+		name = c.fetchall()
+		MyName = [i[0] for i in name]
 	print (makeCheckbox(MyList))
 	nextHTML = """
 
@@ -301,7 +306,7 @@ def display_admin_options(user, session):
 		<div class="panel-body">
 			<div class="col-md-12">
 		<ul>
-		<H4>Welcome {user}</H4>
+		<H4>Welcome """+ MyName[0] +"""</H4>
 		<li> <a href="login.cgi?action=search_last_name_form&user={user}&session={session}">Search Users</a>
 		</ul>
 		<br>
