@@ -241,13 +241,13 @@ def display_admin_options(user, session):
 	  <div class="panel panel-default">
             <div class="panel-body">
               <div class="col-md-12">
-		 <h5 style-"opacity: 70%">Add Friends(subscribe)</h5>
+		 <h5 style-"opacity: 70%">Send Friend Request</h5>
 		 <form method=post action="login.cgi">
             <input type=email class="form-control" required name="message" placeholder="Username">
-		    <input type=hidden name="action" value="subscribe">
+		    <input type=hidden name="action" value="send_request">
 		    <input type=hidden name="user" value={user}>
 		    <input type=hidden name="session" value={session}>
-		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Add</button> 
+		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Send Request</button> 
 		 </form>
               </div>
             </div>
@@ -266,31 +266,35 @@ def display_admin_options(user, session):
               </div>
             </div>
 	 </div>
+	 """
+	print(nextHTML.format(user=user,session=session))
 
 
-	<!--    reply to a post
-
+	
+	friend_request_componet="""
+	<div class="panel panel-default">
 			<FORM METHOD=post ACTION="login.cgi">
-		   	<H4> reply to post id: </H4>
-			<INPUT TYPE=text name="id">
-			<H4> content: </H4>
-			<INPUT TYPE=text name="message">
-			<INPUT TYPE=hidden NAME="action" VALUE="reply">
+			<H5> You have a friend request from {owner} </H5> 
 			<input type=hidden name="user" value={user}>
 			<input type=hidden name="session" value={session}>
-			<INPUT TYPE=submit VALUE="Reply">
+			<input type=hidden name="owner" value={owner}>
+			 <button NAME="action" class="btn btn-md btn-primary " style="margin-top: 7px" type="submit" VALUE="Accept_request">Accept</button> 
+			 <button NAME="action" class="btn btn-md btn-primary " style="margin-top: 7px" type="submit" VALUE="Deny_request">Deny</button> 
 			</FORM>
-			<FORM METHOD=post ACTION="login.cgi">
-		   	<H4> retweet to post id: </H4>
-			<INPUT TYPE=text name="message">
-			<INPUT TYPE=hidden NAME="action" VALUE="retwitt">
-			<input type=hidden name="user" value={user}>
-			<input type=hidden name="session" value={session}>
-			<INPUT TYPE=submit VALUE="retweet">
-			</FORM>
+	</div>
+			 """
 
-	-->
+	conn = sqlite3.connect(DATABASE)
+	t = (user,)
+	with conn:
+		c = conn.cursor()
+		c.execute("SELECT * FROM pending_request where target=? ",t)
+		data2 = c.fetchall()	
+		for owner in data2:
+			
+			print(friend_request_componet.format(owner=owner[1],user=user,session=session))
 
+	nextHTML="""
 	</div>
 	<div class = "col-md-8">
 	<div class="panel panel-default">
@@ -303,7 +307,6 @@ def display_admin_options(user, session):
 		<br>
 		<h3> </h3>
 	<div id = content>
-		
 		"""
 		
 	#Also set a session number in a hidden field so the
@@ -338,8 +341,7 @@ def display_admin_options(user, session):
 							print ('</div>')
 							print "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  " + str(twit[1])+ " </div>"	
 							print '<div style="color : #337ab7">' 
-							print "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Reply: Post id:  " + str(twit[3]) + "| Date:" + twit[0] + " |	" + "id: " + twit[2] + "<br>"
-
+							
 	scriptee = """</div></div>	</div>
    </div>
 </div>
@@ -1021,7 +1023,7 @@ def main():
 
 ################################################################################################################################
 # add a friend
-		elif action == "subscribe":
+		elif action == "send_request":
 			if "message" in form:		
 				target = form["message"].value
 				conn = sqlite3.connect(DATABASE)
@@ -1029,10 +1031,31 @@ def main():
 					c = conn.cursor()
 					t = (form["user"].value,target)
 					# add friendship both ways
+
+					c.execute('INSERT INTO pending_request(owner,target) VALUES (?,?)', t)
+				display_admin_options(form["user"].value, form["session"].value)
+		elif action =="Accept_request":
+			display_admin_options(form["user"].value, form["session"].value)
+			target= form["user"].value 
+			owner= form["owner"].value 
+			t=(owner,target)
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+					c = conn.cursor()
+					c.execute('DELETE FROM pending_request WHERE owner = ? AND target = ?', t)
 					c.execute('INSERT INTO subscribe(owner,target) VALUES (?,?)', t)
 					c.execute('INSERT INTO subscribe(target,owner) VALUES (?,?)', t)
-				display_admin_options(form["user"].value, form["session"].value)
-
+			
+		elif action == "Deny_request":
+			display_admin_options(form["user"].value, form["session"].value)
+			target= form["user"].value 
+			owner= form["owner"].value 
+			t=(owner,target)
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				c = conn.cursor()
+				c.execute('DELETE FROM pending_request WHERE owner = ? AND target = ?', t)
+			
 ################################################################################################################################
 # remove a friend
 		elif action == "unfriend":

@@ -46,6 +46,13 @@ c.execute('''CREATE TABLE subscribe
 	      FOREIGN KEY(owner) REFERENCES users(email)
 	     )''')
 
+c.execute('''CREATE TABLE pending_request
+	     (id INTEGER PRIMARY KEY AUTOINCREMENT,
+	      owner TEXT NOT NULL,
+	      target TEXT NOT NULL,
+	      FOREIGN KEY(owner) REFERENCES users(email)
+	     )''')
+
 # Create album table
 # Visibility is 'public' or 'private'
 c.execute('''CREATE TABLE albums
