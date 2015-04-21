@@ -21,7 +21,7 @@ from email.mime.multipart import MIMEMultipart
 # Import the email modules we'll need
 
 #Get Databasedir
-MYLOGIN="pan41"
+MYLOGIN="xiao67"
 DATABASE="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/picture_share.db"
 IMAGEPATH="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/images"
 
@@ -163,8 +163,8 @@ def display_admin_options(user, session):
 		data = c.fetchall()	
 
 	# store the user and session into the cookie
-	print "Set-Cookie:user={user};"
-	print "Set-Cookie:session={session};"
+	print "Set-Cookie:user=%s" % user
+	print "Set-Cookie:session=%s" % session
 	print "Content-type:text/html"
 
 	html="""
@@ -1102,12 +1102,16 @@ def main():
 			# Trying to retrieving data in the cookie
 			if environ.has_key('HTTP_COOKIE'):
 			   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
-				  (key, value) = split(cookie, '=');
-				  if key == "user":
-					 user = value
+			   		try:
+						(key, value) = split(cookie, '=');
+				  		if key == "user":
+					 		user = value
+					 		print user
 
-				  if key == "session":
-					 session = value
+				  		if key == "session":
+					 		session = value
+					except:
+							print "error"
 
 			print "User= %s" % user
 			print "Session = %s" % session
