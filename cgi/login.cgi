@@ -778,18 +778,19 @@ def add_friend_to_circle_form(user, session, circleID):
 			<center><H2 style="text-align: center; color:white">Add friends to the circle</H2></center>
 			<table align="center">
 			<tr>
-			<td style="text-align: center; color:white">List of friends already in the circle</td>
-			<td align="left">
+			<td style="text-align: center; color:white">List of friends who are able to be added to this circle</td>
+				<tr>
+					<td align="center">
 		"""
 	print_html_content_type()
 	print(html.format(user=user,session=session))
 
 	# get the list of members in the circle from the database
 	conn = sqlite3.connect(DATABASE)
-	t = (circleID,)
+	t = (user,)
 	with conn:
 		c = conn.cursor()
-		c.execute("SELECT username FROM circleMembers WHERE friendCircleID = ? ", t )
+		c.execute("SELECT target FROM subscribe WHERE owner = ? ", t )
 		data4 = c.fetchall()
 		# trim the list of tuples to list of strings
 		data4List = [i[0] for i in data4]
@@ -804,7 +805,7 @@ def add_friend_to_circle_form(user, session, circleID):
 			<br><br>
 			<TABLE align=center>
 			<FORM METHOD=post ACTION="login.cgi">
-			<TR><TH style="text-align: center; color:white">Type friend email to add</TH><TD><INPUT TYPE="text" NAME="friend_name"></TD></TR>
+			<!--  <TR><TH style="text-align: center; color:white">Type friend email to add</TH><TD><INPUT TYPE="text" NAME="friend_name"></TD></TR>  -->
 			</TABLE>
 				<div style="text-align: center" id="addCircleMemberForm">
 					<INPUT TYPE=hidden NAME="action" VALUE="add_member_to_the_circle">	
@@ -1161,9 +1162,9 @@ def main():
 					# add friendship both ways
 
 					c.execute('INSERT INTO pending_request(owner,target) VALUES (?,?)', t)
-				display_admin_options(form["user"].value, form["session"].value)
+				display_admin_options()
 		elif action =="Accept_request":
-			display_admin_options(form["user"].value, form["session"].value)
+			display_admin_options()
 			target= form["user"].value 
 			owner= form["owner"].value 
 			t=(owner,target)
@@ -1175,7 +1176,7 @@ def main():
 					c.execute('INSERT INTO subscribe(target,owner) VALUES (?,?)', t)
 			
 		elif action == "Deny_request":
-			display_admin_options(form["user"].value, form["session"].value)
+			display_admin_options()
 			target= form["user"].value 
 			owner= form["owner"].value 
 			t=(owner,target)
