@@ -21,7 +21,7 @@ from email.mime.multipart import MIMEMultipart
 # Import the email modules we'll need
 
 #Get Databasedir
-MYLOGIN="xiao67"
+MYLOGIN="pan41"
 DATABASE="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/picture_share.db"
 IMAGEPATH="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/images"
 
@@ -91,6 +91,8 @@ def login_form():
 	"""
 	print_html_content_type()
 	print(html)
+		# store the user and session into the cookie
+
 
 #########################################################
 # Define function to generate signup HTML form.
@@ -148,7 +150,21 @@ def verification_form(form):
 ##########################################################
 # Main page after login
 
-def display_admin_options(user, session):
+def display_admin_options():
+	# get the username and session from the cookie
+	if environ.has_key('HTTP_COOKIE'):
+	   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
+	   		try:
+				(key, value) = split(cookie, '=');
+		  		if key == "user":
+			 		user = value
+
+		  		if key == "session":
+			 		session = value
+			except:
+					error = "error"
+
+
 	conn = sqlite3.connect(DATABASE)
 	with conn:
 		c = conn.cursor()
@@ -162,10 +178,7 @@ def display_admin_options(user, session):
 		c.execute(query, friendCirclesString)
 		data = c.fetchall()	
 
-	# store the user and session into the cookie
-	print "Set-Cookie:user=%s" % user
-	print "Set-Cookie:session=%s" % session
-	print "Content-type:text/html"
+
 
 	html="""
 	<html>
@@ -189,14 +202,14 @@ def display_admin_options(user, session):
 		      <li class="dropdown">
 		            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
 		            <ul class="dropdown-menu">
-						  <li><a href="login.cgi?action=user_info_form&user={user}&session={session}">Chaneg User Info</a></li>
-				          <li><a href="login.cgi?action=change_password_form&user={user}&session={session}">Change Password</a></li>
-				          <li><a href="login.cgi?action=upload&user={user}&session={session}">Upload Avatar</a></li>
-						  <li> <a href="login.cgi?action=choose_friend_circle_form&user={user}&session={session}">Manage Friend Circle</a>
-				 		  <li><a href="login.cgi?action=show_feed&user={user}&session={session}">Refresh</a></li>
-						  <li><a  style="color:red" href="login.cgi?action=delete_account_form&user={user}&session={session}">Delete Account</a></li>
+						  <li><a href="login.cgi?action=user_info_form">Chaneg User Info</a></li>
+				          <li><a href="login.cgi?action=change_password_form">Change Password</a></li>
+				          <li><a href="login.cgi?action=upload">Upload Avatar</a></li>
+						  <li> <a href="login.cgi?action=choose_friend_circle_form">Manage Friend Circle</a>
+				 		  <li><a href="login.cgi?action=show_feed">Refresh</a></li>
+						  <li><a  style="color:red" href="login.cgi?action=delete_account_form">Delete Account</a></li>
 				          <li class="divider"></li>
-				          <li><a href="login.cgi?action=return_login&user={user}&session={session}">Log out</a></li>
+				          <li><a href="login.cgi?action=return_login">Log out</a></li>
 		            </ul>
 		      </li>
 		    </ul>
@@ -303,7 +316,7 @@ def display_admin_options(user, session):
 			<div class="col-md-12">
 		<ul>
 		<H4>Welcome """+ MyName[0] +"""</H4>
-		<li> <a href="login.cgi?action=search_last_name_form&user={user}&session={session}">Search Users</a>
+		<li> <a href="login.cgi?action=search_last_name_form">Search Users</a>
 		</ul>
 		<br>
 		<h3> </h3>
@@ -364,7 +377,21 @@ def display_admin_options(user, session):
 
 ###################################################
 
-def change_password_form(user, session):
+def change_password_form():
+
+	# get the username and session from the cookie
+	if environ.has_key('HTTP_COOKIE'):
+	   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
+	   		try:
+				(key, value) = split(cookie, '=');
+		  		if key == "user":
+			 		user = value
+
+		  		if key == "session":
+			 		session = value
+			except:
+					error = "error"
+
 	html="""
 <HTML>
 <HEAD>
@@ -386,6 +413,10 @@ def change_password_form(user, session):
 	<INPUT style="text-align: center" class="btn btn-lg btn-primary" TYPE=submit VALUE="Submit">
 </div>
 </FORM>
+<br>
+<div style="text-align:center">    
+	<a style="color:white" href="login.cgi?action=return">Return</a>
+</div>
 </BODY>
 </HTML>
 """
@@ -396,7 +427,21 @@ def change_password_form(user, session):
 
 ###################################################
 
-def user_info_form(user, session):
+def user_info_form():
+
+	# get the username and session from the cookie
+	if environ.has_key('HTTP_COOKIE'):
+	   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
+	   		try:
+				(key, value) = split(cookie, '=');
+		  		if key == "user":
+			 		user = value
+
+		  		if key == "session":
+			 		session = value
+			except:
+					error = "error"
+
 	html="""
 <HTML>
 <HEAD>
@@ -419,6 +464,10 @@ def user_info_form(user, session):
 	<INPUT style="text-align: center" class="btn btn-lg btn-primary" TYPE=submit VALUE="Submit">
 </div>
 </FORM>
+<br>
+<div style="text-align:center">    
+	<a style="color:white" href="login.cgi?action=return">Return</a>
+</div>
 </BODY>
 </HTML>
 """
@@ -427,7 +476,21 @@ def user_info_form(user, session):
 
 ###################################################
 
-def delete_account_form(user, session):
+def delete_account_form():
+
+	# get the username and session from the cookie
+	if environ.has_key('HTTP_COOKIE'):
+	   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
+	   		try:
+				(key, value) = split(cookie, '=');
+		  		if key == "user":
+			 		user = value
+
+		  		if key == "session":
+			 		session = value
+			except:
+					error = "error"
+
 	html="""
 <HTML>
 <HEAD>
@@ -448,6 +511,10 @@ def delete_account_form(user, session):
 	<INPUT style="text-align: center" class="btn btn-lg btn-primary" TYPE=submit VALUE="Delete">
 </div>
 </FORM>
+<br>
+<div style="text-align:center">    
+	<a style="color:white" href="login.cgi?action=return">Return</a>
+</div>
 </BODY>
 </HTML>
 """
@@ -457,12 +524,23 @@ def delete_account_form(user, session):
 ###############################################################################
 
 def upload(form):
-	if session.check_session(form) != "passed":
-	   login_form()
-	   return
+	# get the username and session from the cookie
+	if environ.has_key('HTTP_COOKIE'):
+	   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
+	   		try:
+				(key, value) = split(cookie, '=');
+		  		if key == "user":
+			 		user = value
 
-	user=form["user"].value
-	s=form["session"].value
+		  		if key == "session":
+			 		session = value
+			except:
+					error = "error"
+
+		
+	#if session.check_session(form) != "passed":
+	#   login_form()
+	#   return
 
 	html="""
 		<HTML>
@@ -488,23 +566,36 @@ def upload(form):
 			<br>
 			<div style="text-align: center" >
 				<input class="btn btn-lg btn-primary" type="submit" value="Submit">
-				<br>
-				<br>
-				<a href="login.cgi?action=return&user={user}&session={session}" style="text-align: center; color:white">Return</a>
 			</div>
 			</form>
+			<br>
+			<div style="text-align:center">    
+				<a style="color:white" href="login.cgi?action=return">Return</a>
+			</div>
 		</BODY>
 		</HTML>
 	"""
 	print_html_content_type()
-	print(html.format(user=user,session=s))
+	print(html.format(user=user,session=session))
 
 
 ###################################################################
 
-def search_last_name_form(form):
-	user=form["user"].value
-	s=form["session"].value
+def search_last_name_form():
+	# get the username and session from the cookie
+	if environ.has_key('HTTP_COOKIE'):
+	   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
+	   		try:
+				(key, value) = split(cookie, '=');
+		  		if key == "user":
+			 		user = value
+
+		  		if key == "session":
+			 		session = value
+			except:
+					error = "error"
+
+
 	html="""
 		<HTML>
 <HEAD>
@@ -519,22 +610,40 @@ def search_last_name_form(form):
 <TR><TH style="text-align: center; color:white">Last name:</TH><TD><INPUT TYPE="text" NAME="message"></TD></TR>
 </TABLE>
 <INPUT TYPE=hidden NAME="action" VALUE="search_last_name">	
-<input type=hidden name="user" value={user}>
+<input type=hidden name="user" value={user} >
 <input type=hidden name="session" value={session}>
 <INPUT TYPE=submit VALUE="Submit">
 </FORM>
 <br>
-<a href="login.cgi?action=return&user={user}&session={session}">Return</a>
+<div style="text-align:center">    
+	<a style="color:white" href="login.cgi?action=return">Return</a>
+</div>
 </BODY>
 </HTML>
 		"""
+
+
 	print_html_content_type()
-	print(html.format(user=user,session=s))
+	print(html.format(user=user, session=session))
 
 
 ###################################################################
 
-def choose_friend_circle_form(user, session):
+def choose_friend_circle_form():
+
+	# get the username and session from the cookie
+	if environ.has_key('HTTP_COOKIE'):
+	   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
+	   		try:
+				(key, value) = split(cookie, '=');
+		  		if key == "user":
+			 		user = value
+
+		  		if key == "session":
+			 		session = value
+			except:
+					error = "error"
+
 	html="""
 		<HTML>
 <HEAD>
@@ -640,7 +749,10 @@ def choose_friend_circle_form(user, session):
 		<br>
 		</table>
 	</FORM>
-
+	<br>
+	<div style="text-align:center">    
+		<a style="color:white" href="login.cgi?action=return">Return</a>
+	</div>
 	</BODY>
 	</HTML>
 			"""
@@ -664,7 +776,7 @@ def add_friend_to_circle_form(user, session, circleID):
 			<center><H2 style="text-align: center; color:white">Add friends to the circle</H2></center>
 			<table align="center">
 			<tr>
-			<td style="text-align: center; color:white">List of friends in the circle</td>
+			<td style="text-align: center; color:white">List of friends already in the circle</td>
 			<td align="left">
 		"""
 	print_html_content_type()
@@ -702,6 +814,10 @@ def add_friend_to_circle_form(user, session, circleID):
 				</div>
 				<br><br>
 			</FORM>
+			<br>
+			<div style="text-align:center">    
+				<a style="color:white" href="login.cgi?action=choose_friend_circle_form">Return</a>
+			</div>
 			</body>
 			</HTML>
 		"""
@@ -764,6 +880,10 @@ def remove_friend_from_circle_form(user, session, circleID):
 					</tr>
 				</table>
 			</FORM>
+			<br>
+			<div style="text-align:center">    
+				<a style="color:white" href="login.cgi?action=choose_friend_circle_form">Return</a>
+			</div>
 			</body>
 			</HTML>
 		"""
@@ -883,7 +1003,7 @@ def upload_pic_data(form):
 		print_html_content_type()
 		print ('<H2>The picture ' + fileName + ' was uploaded successfully</H2>')
 		print('<image src="'+image_url+'">')
-		print ('<a href="login.cgi?action=return&user={user}&session={session}">Return</a>'.format(user=user,session=s))
+		print ('<a href="login.cgi?action=return">Return</a>'.format(user=user,session=s))
 	else:
 		message = 'No file was uploaded'
 
@@ -924,8 +1044,11 @@ def main():
 					   login_form()
 					   print("<H3><font color=\"red\">Invalid email/password</font></H3>")
 					elif check_password(username, password)=="passed":
-					   session=create_new_session(username)
-					   display_admin_options(username, session)
+						session = create_new_session(username)
+						print "Set-Cookie:user=%s" % username
+						print "Set-Cookie:session=%s" % session
+						print "Content-type:text/html"
+						display_admin_options()
 					else:
 					   login_form()
 					   print("<H3><font color=\"red\">Incorrect email/password</font></H3>")
@@ -972,7 +1095,7 @@ def main():
 
 #############################################################################
 		elif (action == "change_password_form"):
-			change_password_form(form["user"].value,form["session"].value)
+			change_password_form()
 		elif (action == "change_password"):
 			newpassword=form["password"].value
 			conn = sqlite3.connect(DATABASE)
@@ -986,7 +1109,7 @@ def main():
 
 #############################################################################
 		elif (action == "user_info_form"):
-			user_info_form(form["user"].value,form["session"].value)
+			user_info_form()
 		elif (action == "change_user_info"):
 			newFirstName=form["newFirstName"].value
 			newLastName=form["newLastName"].value
@@ -1000,7 +1123,7 @@ def main():
 
 ################################################################################
 		elif (action == "delete_account_form"):
-			delete_account_form(form["user"].value,form["session"].value)
+			delete_account_form()
 		elif (action == "delete_account"):
 			conn = sqlite3.connect(DATABASE)
 			with conn:
@@ -1022,7 +1145,7 @@ def main():
 		elif action == "upload-pic-data":
 			upload_pic_data(form)
 		elif action == "show_feed":
-			display_admin_options(form["user"].value, form["session"].value)
+			display_admin_options()
 
 ################################################################################################################################
 # add a friend
@@ -1036,7 +1159,7 @@ def main():
 					# add friendship both ways
 					c.execute('INSERT INTO subscribe(owner,target) VALUES (?,?)', t)
 					c.execute('INSERT INTO subscribe(target,owner) VALUES (?,?)', t)
-				display_admin_options(form["user"].value, form["session"].value)
+				display_admin_options()
 
 ################################################################################################################################
 # remove a friend
@@ -1050,7 +1173,7 @@ def main():
 					# delete friendship both ways
 					c.execute('DELETE FROM subscribe WHERE owner = ? AND target = ?', t)
 					c.execute('DELETE FROM subscribe WHERE target = ? AND owner = ?', t)
-				display_admin_options(form["user"].value, form["session"].value)
+				display_admin_options()
 
 ################################################################################################################################
 		elif action == "twitt":
@@ -1069,12 +1192,12 @@ def main():
 								selectedCircleID = c.fetchone()[0]
 								t = (now,msg,form["user"].value,0,selectedCircleID)
 								c.execute("INSERT INTO twitts(time,msg,owner,parent,friendCircleID) VALUES (?,?,?,?,?)",t)
-						display_admin_options(form["user"].value, form["session"].value)
+						display_admin_options()
 					else:
-						display_admin_options(form["user"].value, form["session"].value)
+						display_admin_options()
 						print("<H3><font color=\"red\">you are not suppose to see this</font></H3>")
 				else: 
-					display_admin_options(form["user"].value, form["session"].value)
+					display_admin_options()
 					print("<H3><font color=\"red\">Select at least 1 circle to post</font></H3>")
 
 		elif action == "retwitt":
@@ -1088,7 +1211,7 @@ def main():
 					row=c.fetchone()
 					t=(now,'RT: '+row[1]+'@'+row[2],form["user"].value,0)
 					c.execute("INSERT INTO twitts(time,msg,owner,parent) VALUES (?,?,?,?)",t)
-				display_admin_options(form["user"].value, form["session"].value)
+				display_admin_options()
 
 		elif action == "reply":
 			if "message" in form:		
@@ -1100,31 +1223,12 @@ def main():
 					c = conn.cursor()
 					t = (now,msg,form["user"].value,parent)
 					c.execute("INSERT INTO twitts(time,msg,owner,parent) VALUES (?,?,?,?)",t)
-				display_admin_options(form["user"].value, form["session"].value)
-
-		elif action == "search_last_name_form":
-			search_last_name_form(form)
-			# Trying to retrieving data in the cookie
-			if environ.has_key('HTTP_COOKIE'):
-			   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
-			   		try:
-						(key, value) = split(cookie, '=');
-				  		if key == "user":
-					 		user = value
-					 		print user
-
-				  		if key == "session":
-					 		session = value
-					except:
-							print "error"
-
-			print "User= %s" % user
-			print "Session = %s" % session
+				display_admin_options()
 
 
 ################################################################################################################################
 		elif action == "choose_friend_circle_form":
-			choose_friend_circle_form(form["user"].value, form["session"].value)
+			choose_friend_circle_form()
 
 		# create a new friend circle
 		elif action == "add_friend_circle":
@@ -1143,7 +1247,7 @@ def main():
 					selectedCircleID = c.fetchone()[0]
 					p = (selectedCircleID, owner)
 					c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",p)
-				choose_friend_circle_form(form["user"].value, form["session"].value)
+				choose_friend_circle_form()
 
 ################################################################################################################################
 
@@ -1215,6 +1319,10 @@ def main():
 
 
 ################################################################################################################################
+
+		elif action == "search_last_name_form":
+			search_last_name_form()
+
 		elif action == "search_last_name":
 
 			conn = sqlite3.connect(DATABASE)
@@ -1234,7 +1342,7 @@ def main():
 		elif action == "return_login":
 			login_form()
 		else:
-			display_admin_options(form["user"].value, form["session"].value)
+			display_admin_options()
 	else:
 		login_form()
 	#cgi.test()
