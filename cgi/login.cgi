@@ -273,6 +273,20 @@ def display_admin_options():
 	<div class="panel panel-default">
             <div class="panel-body">
               <div class="col-md-12">
+		 <h5 style-"opacity: 70%">Add Friends(legacy)</h5>
+		 <form method=post action="login.cgi">
+            <input type=email class="form-control" required name="message" placeholder="Username">
+		    <input type=hidden name="action" value="subscribe">
+		    <input type=hidden name="user" value={user}>
+		    <input type=hidden name="session" value={session}>
+		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Force Add</button> 
+		 </form>
+              </div>
+            </div>
+	 </div>
+	<div class="panel panel-default">
+            <div class="panel-body">
+              <div class="col-md-12">
 		 <h5 style-"opacity: 70%">Remove Friends</h5>
 		 <form method=post action="login.cgi">
                     <input type=email class="form-control" required name="message" placeholder="Username">
@@ -776,9 +790,10 @@ def add_friend_to_circle_form(user, session, circleID):
 			</head>
 			<body background="bg.jpg">
 			<center><H2 style="text-align: center; color:white">Add friends to the circle</H2></center>
-			<table align="center">
-			<tr>
-			<td style="text-align: center; color:white">List of friends who are able to be added to this circle</td>
+
+			<FORM METHOD=post ACTION="login.cgi">
+				<table align="center">
+				<td style="color:white">List of friends who are able to be added to this circle</td>
 				<tr>
 					<td align="center">
 		"""
@@ -787,10 +802,10 @@ def add_friend_to_circle_form(user, session, circleID):
 
 	# get the list of members in the circle from the database
 	conn = sqlite3.connect(DATABASE)
-	t = (user,)
+	t = (user, user)
 	with conn:
 		c = conn.cursor()
-		c.execute("SELECT target FROM subscribe WHERE owner = ? ", t )
+		c.execute("SELECT target FROM subscribe WHERE owner = ? AND NOT target = ?", t )
 		data4 = c.fetchall()
 		# trim the list of tuples to list of strings
 		data4List = [i[0] for i in data4]
@@ -798,21 +813,13 @@ def add_friend_to_circle_form(user, session, circleID):
 	print(makeSelect('selectFriendsToAdd',data4List))
 
 	restHTML = """
-			</td>
-			</tr>
-			</td>
-			</table>
-			<br><br>
-			<TABLE align=center>
-			<FORM METHOD=post ACTION="login.cgi">
-			<!--  <TR><TH style="text-align: center; color:white">Type friend email to add</TH><TD><INPUT TYPE="text" NAME="friend_name"></TD></TR>  -->
-			</TABLE>
+
 				<div style="text-align: center" id="addCircleMemberForm">
 					<INPUT TYPE=hidden NAME="action" VALUE="add_member_to_the_circle">	
 					<INPUT type=hidden name="user" value={user}>
 					<INPUT type=hidden name="session" value={session}>
 					<INPUT type=hidden name="circleID" value={circleID}>
-					<br>
+					<br><br>
 					<INPUT class="btn btn-lg btn-primary" TYPE=submit VALUE="Add Friend">
 				</div>
 				<br><br>
@@ -857,10 +864,10 @@ def remove_friend_from_circle_form(user, session, circleID):
 
 	# get the list of members in the circle from the database
 	conn = sqlite3.connect(DATABASE)
-	t = (circleID,)
+	t = (circleID, user)
 	with conn:
 		c = conn.cursor()
-		c.execute("SELECT username FROM circleMembers WHERE friendCircleID = ? ", t )
+		c.execute("SELECT username FROM circleMembers WHERE friendCircleID = ? AND NOT username = ?", t )
 		data5 = c.fetchall()
 		# trim the list of tuples to list of strings
 		data5List = [i[0] for i in data5]	
@@ -1186,6 +1193,20 @@ def main():
 				c.execute('DELETE FROM pending_request WHERE owner = ? AND target = ?', t)
 			
 ################################################################################################################################
+# add a friend (legacy)
+		elif action == "subscribe":
+			if "message" in form:		
+				target = form["message"].value
+				conn = sqlite3.connect(DATABASE)
+				with conn:
+					c = conn.cursor()
+					t = (form["user"].value,target)
+					# add friendship both ways
+					c.execute('INSERT INTO subscribe(owner,target) VALUES (?,?)', t)
+					c.execute('INSERT INTO subscribe(target,owner) VALUES (?,?)', t)
+				display_admin_options()
+
+################################################################################################################################
 # remove a friend
 		elif action == "unfriend":
 			if "message" in form:		
@@ -1279,6 +1300,7 @@ def main():
 			#print "Content-type: text/html\n\n";
 			#print (form.getvalue('selectCircleDropdown'))
 			#print (form['user'].value)
+
 			# get the current friend circle name first
 			if form.getvalue('selectCircleDropdown'):
 			   selectedCircleName = str(form.getvalue('selectCircleDropdown'))
@@ -1294,25 +1316,25 @@ def main():
 			add_friend_to_circle_form(form["user"].value, form["session"].value, selectedCircleID)
 
 		elif action == "add_member_to_the_circle":
-			# check whether this email belongs to one of the friends
-			if "friend_name" in form:
-				owner = form["user"].value
-				username = form["friend_name"].value
-				if IsFriend(owner,username)=="failed":
-					add_friend_to_circle_form(form["user"].value, form["session"].value, form["circleID"].value)
-					print("<H3><font color=\"red\">Can't find this person in your friend list</font></H3>")
-				else:
-					conn = sqlite3.connect(DATABASE)
-					with conn:
-						conn.text_factory = str
-						c = conn.cursor()
-						params = (form["circleID"].value, username)
-						c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",params)
-					add_friend_to_circle_form(form["user"].value, form["session"].value, form["circleID"].value)
+			# get the selected friend for adding to circle
+			if form.getvalue('selectFriendsToAdd'):
+			    username = str(form.getvalue('selectFriendsToAdd'))
+			else:
+			    username = "Not entered"
+
+			owner = form["user"].value
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				conn.text_factory = str
+				c = conn.cursor()
+				params = (form["circleID"].value, username)
+				c.execute("INSERT INTO circleMembers (friendCircleID, username) VALUES (?,?);",params)
+			add_friend_to_circle_form(form["user"].value, form["session"].value, form["circleID"].value)
 
 
 ################################################################################################################################
 		elif action == "remove_friend_from_circle_form":
+			# get the current friend circle name first
 			if form.getvalue('selectCircleDropdown'):
 			   selectedCircleName = str(form.getvalue('selectCircleDropdown'))
 			else:
@@ -1326,8 +1348,7 @@ def main():
 				selectedCircleID = c.fetchone()[0]
 			remove_friend_from_circle_form(form["user"].value, form["session"].value, selectedCircleID)
 		elif action == "remove_member_from_the_circle":
-			#print "Content-type: text/html\n\n";
-			#print form.getvalue('selectFriendsToRemove')
+			# get the selected member in the circle for removing
 			if form.getvalue('selectFriendsToRemove'):
 			   username = str(form.getvalue('selectFriendsToRemove'))
 			else:
