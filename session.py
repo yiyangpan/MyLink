@@ -14,7 +14,7 @@ from email.mime.multipart import MIMEMultipart
 # Import the email modules we'll need
 
 #Get Databasedir
-MYLOGIN="ypan91"
+MYLOGIN="xiao67"
 DATABASE="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/picture_share.db"
 IMAGEPATH="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/images"
 
