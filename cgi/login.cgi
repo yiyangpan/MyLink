@@ -1250,6 +1250,7 @@ def main():
 							print_html_content_type()
 
 							open(IMAGEPATH+'/twitts/'+str(tid)+'.jpg', 'wb').write(fileInfo.file.read())
+						display_admin_options()
 					else:
 						display_admin_options()
 						print("<H3><font color=\"red\">you are not suppose to see this</font></H3>")
