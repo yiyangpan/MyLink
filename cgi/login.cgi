@@ -275,7 +275,7 @@ def display_admin_options():
               </div>
             </div>
 	 </div>
-	<div class="panel panel-default">
+	<!-- <div class="panel panel-default">
             <div class="panel-body">
               <div class="col-md-12">
 		 <h5 style-"opacity: 70%">Add Friends(legacy)</h5>
@@ -287,8 +287,8 @@ def display_admin_options():
 		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Force Add</button> 
 		 </form>
               </div>
-            </div>
-	 </div>
+            </div> 
+	 </div> -->
 	<div class="panel panel-default">
             <div class="panel-body">
               <div class="col-md-12">
