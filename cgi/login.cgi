@@ -22,7 +22,7 @@ from email.mime.text import MIMEText
 # Import the email modules we'll need
 
 #Get Databasedir
-MYLOGIN="xiao67"
+MYLOGIN="pan41"
 DATABASE="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/picture_share.db"
 IMAGEPATH="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/images"
 
