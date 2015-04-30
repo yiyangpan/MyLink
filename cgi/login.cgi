@@ -32,12 +32,12 @@ def send_email(receivers,code):
 	sender = 'xiao67@purdue.edu'
 
 
-	msg = MIMEText('Just Kidding Your verification code is %s' %  code )
+	msg = MIMEText('Your verification code is %s' %  code )
 
 	#msg['Subject'] = 'Your verification code is %s' %  code
-	msg['Subject'] = 'You fail this class'
+	msg['Subject'] = 'Email verification'
 
-	msg['From'] = "grr"
+	msg['From'] = "xiao67"
 	msg['To'] = receivers
 
 
@@ -294,18 +294,50 @@ def display_admin_options():
             <div class="panel-body">
               <div class="col-md-12">
 		 <h5 style-"opacity: 70%">Remove Friends</h5>
-		 <form method=post action="login.cgi">
-                    <input type=email class="form-control" required name="message" placeholder="Username">
-		    <input type=hidden name="action" value="unfriend">
-		    <input type=hidden name="user" value={user}>
-		    <input type=hidden name="session" value={session}>
-		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Unfriend</button> 
-		 </form>
+		<FORM METHOD=post ACTION="login.cgi">
+		<table align="center">
+			<td style="color:white">Choose an existing friend to remove ffffff</td>
+			<tr>
+				<td align="center">
+
+			<INPUT TYPE=hidden NAME="action" VALUE="unfriend">	
+			<INPUT type=hidden name="user" value={user}>
+			<INPUT type=hidden name="session" value={session}>
+			
+
+
+"""
+
+	print(nextHTML.format(user=user,session=session))
+
+	# get the list of friend circles from the database
+	conn = sqlite3.connect(DATABASE)
+	t = (user, user)
+	with conn:
+		c = conn.cursor()
+		c.execute("SELECT target FROM subscribe where owner=? AND NOT target = ?",t)
+		data3 = c.fetchall()
+		# trim the list of tuples to list of strings
+		data3List = [i[0] for i in data3]
+	# generate the javascript selection list
+
+	print(makeSelect('removeFriendDropdown',data3List))
+	restHTML = """
+				<br><br>
+
+					<input type="submit" style="text-align: center; color:white"  class="btn btn-md btn-primary btn-block" value = "Remove member" href="login.cgi?action=remove_friend_from_circle_form&user={user}&session={session}"></a>
+
+
+			</td>
+		</tr>
+		<br>
+		</table>
+	</FORM>
               </div>
             </div>
 	 </div>
 	 """
-	print(nextHTML.format(user=user,session=session))
+	print(restHTML.format(user=user,session=session))
 
 
 	
@@ -1129,7 +1161,7 @@ def main():
 				owner = form["user"].value
 				params = (newFirstName,newLastName, owner)				
 				c.execute('UPDATE users SET first_name=?, last_name=? WHERE email=? ', params)
-			login_form()
+			display_admin_options()
 
 ################################################################################
 		elif (action == "delete_account_form"):
@@ -1210,16 +1242,19 @@ def main():
 ################################################################################################################################
 # remove a friend
 		elif action == "unfriend":
-			if "message" in form:		
-				target = form["message"].value
-				conn = sqlite3.connect(DATABASE)
-				with conn:
-					c = conn.cursor()
-					t = (form["user"].value,target)
-					# delete friendship both ways
-					c.execute('DELETE FROM subscribe WHERE owner = ? AND target = ?', t)
-					c.execute('DELETE FROM subscribe WHERE target = ? AND owner = ?', t)
-				display_admin_options()
+			# get the selected member in the circle for removing
+			if form.getvalue('removeFriendDropdown'):
+			   username = str(form.getvalue('removeFriendDropdown'))
+			else:
+			   username = "Not entered"
+			conn = sqlite3.connect(DATABASE)
+			with conn:
+				c = conn.cursor()
+				t = (form["user"].value,username)
+				# delete friendship both ways
+				c.execute('DELETE FROM subscribe WHERE owner = ? AND target = ?', t)
+				c.execute('DELETE FROM subscribe WHERE target = ? AND owner = ?', t)
+			display_admin_options()
 
 ################################################################################################################################
 		elif action == "twitt":
