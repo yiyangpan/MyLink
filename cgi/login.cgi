@@ -151,6 +151,7 @@ def verification_form(form):
 # Main page after login
 
 def display_admin_options():
+	
 	# get the username and session from the cookie
 	if environ.has_key('HTTP_COOKIE'):
 	   for cookie in map(strip, split(environ['HTTP_COOKIE'], ';')):
@@ -1057,7 +1058,6 @@ def main():
 						session = create_new_session(username)
 						print "Set-Cookie:user=%s" % username
 						print "Set-Cookie:session=%s" % session
-						print "Content-type:text/html"
 						display_admin_options()
 					else:
 					   login_form()
