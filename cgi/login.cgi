@@ -18,10 +18,11 @@ import random
 import smtplib
 import mimetypes
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 # Import the email modules we'll need
 
 #Get Databasedir
-MYLOGIN="pan41"
+MYLOGIN="xiao67"
 DATABASE="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/picture_share.db"
 IMAGEPATH="/homes/"+MYLOGIN+"/apache/htdocs/MyLink/images"
 
@@ -31,17 +32,17 @@ def send_email(receivers,code):
 	sender = 'xiao67@purdue.edu'
 
 
-	msg = MIMEMultipart()
+	msg = MIMEText('Just Kidding Your verification code is %s' %  code )
 
 	#msg['Subject'] = 'Your verification code is %s' %  code
-	msg['Subject'] = 'Your verification code is %s' %  code
+	msg['Subject'] = 'You fail this class'
 
 	msg['From'] = "grr"
 	msg['To'] = receivers
 
 
 	smtpObj = smtplib.SMTP('localhost')
-	smtpObj.sendmail(sender, receivers, msg.as_string()+code)      
+	smtpObj.sendmail(sender, receivers, msg.as_string())      
 
 ##############################################################
 def id_generator(size=10):
@@ -166,6 +167,7 @@ def display_admin_options():
 					error = "error"
 
 
+
 	conn = sqlite3.connect(DATABASE)
 	with conn:
 		c = conn.cursor()
@@ -186,7 +188,8 @@ def display_admin_options():
 		<head color>
 		<title>MyLink: Feed</title>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<meta  content="8;url=login.cgi?action=show_feed&user={user}&session={session}">                <!-- if want auto refresh add http-equiv="refresh" -->
+			<meta  content="8;url=login.cgi?action=show_feed&user={user}&session={session}">                
+			<!-- if want auto refresh add http-equiv="refresh" -->
 			<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 			<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
 		</head>
@@ -225,7 +228,7 @@ def display_admin_options():
 		        <div class="panel-body">
 		          <div class="col-md-12">
 			 <h5 style-"opacity: 70%">New Post</h5>
-			<form METHOD=post ACTION="login.cgi">
+			<form METHOD=post ACTION="login.cgi" enctype="multipart/form-data">
 	"""
 	print_html_content_type()
 	print(html.format(user=user,session=session))
@@ -246,6 +249,8 @@ def display_admin_options():
 		MyName = [i[0] for i in name]
 	print (makeCheckbox(MyList))
 	nextHTML = """
+
+
 
             <textarea class="form-control" required name="message" rows="3" placeholder="What's on your mind?"></textarea>
 		    <input type=hidden name="action" value="twitt">
@@ -271,7 +276,7 @@ def display_admin_options():
               </div>
             </div>
 	 </div>
-	<div class="panel panel-default">
+	<!-- <div class="panel panel-default">
             <div class="panel-body">
               <div class="col-md-12">
 		 <h5 style-"opacity: 70%">Add Friends(legacy)</h5>
@@ -283,8 +288,8 @@ def display_admin_options():
 		    <button class="btn btn-md btn-primary btn-block" style="margin-top: 7px" type="submit">Force Add</button> 
 		 </form>
               </div>
-            </div>
-	 </div>
+            </div> 
+	 </div> -->
 	<div class="panel panel-default">
             <div class="panel-body">
               <div class="col-md-12">
@@ -363,17 +368,14 @@ def display_admin_options():
 					print('<image src="'+picturepath+'" style="max-width: 100%"></div>')
 					print '<div>' 
 					print str(twit[1])+ " </div>"	
+					
+					
+					twitt_picture_path='../images/twitts/'+str(twit[3])+'.jpg'
+					if os.path.isfile(twitt_picture_path):
+						print('<image src="'+twitt_picture_path+'" style="max-width: 100%"></div>')
+
 					print '<div style="color : #337ab7">' 
-					print "Post id:" + str(twit[3]) + "|  Date:" + twit[0] + " |	" + "id: " + twit[2] + "</div><br>"
-					now=twit[3]
-					for twit in data:
-						if (twit[4]==now):
-							picturepath='../images/user1/'+twit[2]+'.jpg'
-							print '<div style="width:50px; height:50px; padding-right:50px; overflow:hidden ">'
-							print('<image src="'+picturepath+'" style="max-width: 100%; position:relative; left:50px;">')	
-							print ('</div>')
-							print "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  " + str(twit[1])+ " </div>"	
-							print '<div style="color : #337ab7">' 
+					print "Date:" + twit[0] + " |	" + "id: " + twit[2] + "</div><br>"
 							
 	scriptee = """</div></div>	</div>
    </div>
@@ -1015,8 +1017,6 @@ def upload_pic_data(form):
 		print ('<H2>The picture ' + fileName + ' was uploaded successfully</H2>')
 		print('<image src="'+image_url+'">')
 		print ('<a href="login.cgi?action=return">Return</a>'.format(user=user,session=s))
-	else:
-		message = 'No file was uploaded'
 
 def print_html_content_type():
 	# Required header that tells the browser how to render the HTML.
@@ -1171,7 +1171,6 @@ def main():
 					c.execute('INSERT INTO pending_request(owner,target) VALUES (?,?)', t)
 				display_admin_options()
 		elif action =="Accept_request":
-			display_admin_options()
 			target= form["user"].value 
 			owner= form["owner"].value 
 			t=(owner,target)
@@ -1181,9 +1180,10 @@ def main():
 					c.execute('DELETE FROM pending_request WHERE owner = ? AND target = ?', t)
 					c.execute('INSERT INTO subscribe(owner,target) VALUES (?,?)', t)
 					c.execute('INSERT INTO subscribe(target,owner) VALUES (?,?)', t)
+
+			display_admin_options()
 			
 		elif action == "Deny_request":
-			display_admin_options()
 			target= form["user"].value 
 			owner= form["owner"].value 
 			t=(owner,target)
@@ -1191,6 +1191,7 @@ def main():
 			with conn:
 				c = conn.cursor()
 				c.execute('DELETE FROM pending_request WHERE owner = ? AND target = ?', t)
+			display_admin_options()
 			
 ################################################################################################################################
 # add a friend (legacy)
@@ -1229,6 +1230,7 @@ def main():
 					if (validate_tweet(msg)!=0):
 						now = time.strftime('%Y-%m-%d %H:%M:%S')
 						conn = sqlite3.connect(DATABASE)
+
 						with conn:
 							c = conn.cursor()
 							for selectedCircleName in checkboxes:
@@ -1237,10 +1239,22 @@ def main():
 								selectedCircleID = c.fetchone()[0]
 								t = (now,msg,form["user"].value,0,selectedCircleID)
 								c.execute("INSERT INTO twitts(time,msg,owner,parent,friendCircleID) VALUES (?,?,?,?,?)",t)
+
+								c.execute("SELECT * from twitts order by time desc");
+
+								tid=c.fetchone()[3];
+						fileInfo = form['file']
+						if fileInfo.filename:
+							# Remove directory path to extract name only
+							fileName = os.path.basename(fileInfo.filename)
+							print_html_content_type()
+
+							open(IMAGEPATH+'/twitts/'+str(tid)+'.jpg', 'wb').write(fileInfo.file.read())
 						display_admin_options()
 					else:
 						display_admin_options()
 						print("<H3><font color=\"red\">you are not suppose to see this</font></H3>")
+
 				else: 
 					display_admin_options()
 					print("<H3><font color=\"red\">Select at least 1 circle to post</font></H3>")
