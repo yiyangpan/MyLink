@@ -372,7 +372,7 @@ def display_admin_options():
 			<div class="col-md-12">
 		<ul>
 		<H4>Welcome """+ MyName[0] +"""</H4>
-		<li> <a href="login.cgi?action=search_last_name_form">Search Users</a>
+		<!-- ><li> <a href="login.cgi?action=search_last_name_form">Search Users</a> <-->
 		</ul>
 		<br>
 		<h3> </h3>
